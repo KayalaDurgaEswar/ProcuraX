@@ -50,7 +50,6 @@ Natural Language Procurement Request ("Procure 50 laptops with 16GB RAM...")
 ```
 .
 ├── backend/
-│   ├── data/                 # File-backed SQLite/JSON persistent database
 │   ├── src/
 │   │   ├── config/           # Environment variables & threshold policies
 │   │   ├── db/               # Entity models, database repository & seed data
@@ -94,12 +93,17 @@ Natural Language Procurement Request ("Procure 50 laptops with 16GB RAM...")
    npm run build
    ```
 
-2. **Start Backend Server**:
+2. **Configure and Start Backend Server**:
    ```bash
    cd backend
    npm install
+   copy .env.example .env
    npm start
    ```
+
+   On macOS/Linux, use `cp .env.example .env` instead of `copy`.
+
+   The example environment uses the verified local Beckn sandbox lifecycle and contains no real database credentials.
 
 3. **Access Angular Dashboard**:
    Open browser at:
@@ -111,16 +115,38 @@ Natural Language Procurement Request ("Procure 50 laptops with 16GB RAM...")
 
 ## 🧪 Running Automated Tests
 
-Run backend integration test suite:
+Run backend unit, protocol, route, concurrency, and end-to-end tests:
 
 ```bash
 cd backend
 npm test
 ```
 
+Verify the Angular production bundle:
+
+```bash
+cd frontend
+npm run build
+```
+
+Tests force isolated MongoDB, mock commerce, and mock LLM settings before application modules load, so a developer's local `.env` cannot accidentally send test traffic to a live network.
+
 ---
 
 ## 🤝 Team Delegation & Task Specs
 
-Detailed task specifications and API endpoint references for Developer 1 (Beckn Protocol Specialist), Developer 2 (AI Intent & Negotiation Specialist), and Developer 3 (Angular Frontend Specialist) are documented in [`DELEGATION_ROADMAP.md`](file:///Users/durgaeswar/Desktop/AI1_TEAM%20-%202/DELEGATION_ROADMAP.md).
-# ProcuraX
+Detailed team ownership, API responsibilities, and module boundaries are documented in [`DELEGATION_ROADMAP.md`](DELEGATION_ROADMAP.md).
+
+## Network Modes
+
+- `mock`: deterministic in-process commerce fixtures.
+- `sandbox`: verified local HTTP Beckn lifecycle covering search, select, init, confirm, status, and tracking.
+- `real`: external Beckn/ONDC transport with outbound Ed25519 authorization signing and authenticated callbacks. Configure `ONDC_UNIQUE_KEY_ID`, `ONDC_SIGNING_PRIVATE_KEY`, trusted callback public keys, and the target gateway before enabling it.
+
+## Persistence & Security Notes
+
+- MongoDB is the canonical persistence layer; the retired JSON database is no longer part of the application.
+- Production fails closed when the configured MongoDB is unavailable unless `ALLOW_EMBEDDED_DB_FALLBACK=true` is explicitly set.
+- Audit events cannot be updated or deleted through the repository adapter.
+- Approval/rejection policy checks enforce organization membership, role tier, monetary limits, and atomic decision transitions.
+- Never commit real MongoDB, Beckn, or deployment credentials. Keep them in local/deployment secret configuration.
