@@ -382,7 +382,8 @@ class ProcurementAgent {
       status: 'CONFIRMED',
       fulfillmentStatus: confirmResult.order.fulfillmentStatus,
       trackingUrl: confirmResult.order.trackingUrl,
-      estimatedDeliveryDate: confirmResult.order.estimatedDeliveryDate
+      estimatedDeliveryDate: confirmResult.order.estimatedDeliveryDate,
+      networkContext: confirmResult.networkContext || null
     });
 
     // STATE: ORDER_CONFIRMED -> TRACKING

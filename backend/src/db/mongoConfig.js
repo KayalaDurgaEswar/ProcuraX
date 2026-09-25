@@ -77,4 +77,12 @@ async function seedInitialMongoData() {
   console.log('[MongoDB] Seeded default Users, Organizations & Memory patterns into MongoDB.');
 }
 
-module.exports = { connectDB };
+async function disconnectDB() {
+  await mongoose.disconnect();
+  if (memoryServer) {
+    await memoryServer.stop();
+    memoryServer = null;
+  }
+}
+
+module.exports = { connectDB, disconnectDB };
