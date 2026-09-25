@@ -1,153 +1,80 @@
-const fs = require('fs');
-const path = require('path');
+const models = require('../models/mongoModels');
 
 class Database {
-  constructor() {
-    this.dbPath = path.join(__dirname, '../../data/db.json');
-    this.data = {
-      users: [],
-      organizations: [],
-      procurementRequests: [],
-      procurementItems: [],
-      sellers: [],
-      offers: [],
-      negotiations: [],
-      approvals: [],
-      orders: [],
-      auditEvents: [],
-      agentExecutions: [],
-      memoryPatterns: []
+  getModel(collection) {
+    const map = {
+      users: models.User,
+      organizations: models.Organization,
+      procurementRequests: models.ProcurementRequest,
+      offers: models.Offer,
+      negotiations: models.Negotiation,
+      approvals: models.Approval,
+      orders: models.Order,
+      auditEvents: models.AuditEvent,
+      memoryPatterns: models.MemoryPattern
     };
-    this.init();
+    return map[collection];
   }
 
-  init() {
-    const dir = path.dirname(this.dbPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+  async find(collection, query = {}) {
+    const Model = this.getModel(collection);
+    if (!Model) return [];
+    
+    let filter = query;
+    if (typeof query === 'function') {
+      // Compatibility helper for legacy array predicate functions
+      const all = await Model.find({}).lean();
+      return all.filter(query);
     }
+    return await Model.find(filter).lean();
+  }
 
-    if (fs.existsSync(this.dbPath)) {
-      try {
-        const raw = fs.readFileSync(this.dbPath, 'utf8');
-        this.data = { ...this.data, ...JSON.parse(raw) };
-      } catch (err) {
-        console.error('Error loading db file, re-initializing:', err.message);
-        this.seedInitialData();
-      }
-    } else {
-      this.seedInitialData();
+  async findOne(collection, query = {}) {
+    const Model = this.getModel(collection);
+    if (!Model) return null;
+
+    if (typeof query === 'function') {
+      const all = await Model.find({}).lean();
+      return all.find(query) || null;
     }
+    return await Model.findOne(query).lean();
   }
 
-  seedInitialData() {
-    this.data.organizations = [
-      {
-        id: 'org_acme_corp_001',
-        name: 'Acme Enterprise Solutions',
-        code: 'ACME-ENT',
-        budgetCapPaise: 5000000000, // ₹5,00,00,000 in paise
-        createdAt: new Date().toISOString()
-      }
-    ];
-
-    this.data.users = [
-      {
-        id: 'user_procurement_lead',
-        orgId: 'org_acme_corp_001',
-        name: 'Sarah Connor',
-        email: 'sarah.connor@acme.com',
-        role: 'Procurement Manager',
-        approvalLimitPaise: 50000000, // ₹5,00,000 in paise
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'user_cfo',
-        orgId: 'org_acme_corp_001',
-        name: 'David Miller',
-        email: 'david.cfo@acme.com',
-        role: 'Chief Financial Officer',
-        approvalLimitPaise: 1000000000, // ₹1,00,00,000 in paise
-        createdAt: new Date().toISOString()
-      }
-    ];
-
-    // Seed historical memory patterns for baseline learning
-    this.data.memoryPatterns = [
-      {
-        id: 'mem_001',
-        category: 'laptop',
-        preferredSellers: ['seller_techsupply_01', 'seller_omni_02'],
-        averagePricePerUnitPaise: 9200000, // ₹92,000
-        avgDeliveryDays: 5,
-        successfulProcurementsCount: 14,
-        lastProcuredAt: new Date(Date.now() - 30 * 86400000).toISOString()
-      }
-    ];
-
-    this.save();
+  async findById(collection, id) {
+    return await this.findOne(collection, { id });
   }
 
-  save() {
-    try {
-      fs.writeFileSync(this.dbPath, JSON.stringify(this.data, null, 2), 'utf8');
-    } catch (err) {
-      console.error('Failed to write db to disk:', err.message);
-    }
-  }
+  async insert(collection, item) {
+    const Model = this.getModel(collection);
+    if (!Model) throw new Error(`Collection ${collection} not found`);
 
-  // Generic Helpers
-  find(collection, predicate) {
-    if (!this.data[collection]) return [];
-    return this.data[collection].filter(predicate);
-  }
-
-  findOne(collection, predicate) {
-    if (!this.data[collection]) return null;
-    return this.data[collection].find(predicate) || null;
-  }
-
-  findById(collection, id) {
-    return this.findOne(collection, item => item.id === id);
-  }
-
-  insert(collection, item) {
-    if (!this.data[collection]) {
-      this.data[collection] = [];
-    }
-    const record = {
+    const record = await Model.create({
       ...item,
-      createdAt: item.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    this.data[collection].push(record);
-    this.save();
-    return record;
+      createdAt: item.createdAt || new Date(),
+      updatedAt: new Date()
+    });
+    return record.toObject ? record.toObject() : record;
   }
 
-  update(collection, id, updates) {
-    if (!this.data[collection]) return null;
-    const index = this.data[collection].findIndex(item => item.id === id);
-    if (index === -1) return null;
+  async update(collection, id, updates) {
+    const Model = this.getModel(collection);
+    if (!Model) return null;
 
-    const current = this.data[collection][index];
-    const updated = {
-      ...current,
-      ...updates,
-      updatedAt: new Date().toISOString()
-    };
-    this.data[collection][index] = updated;
-    this.save();
+    const updated = await Model.findOneAndUpdate(
+      { id },
+      { ...updates, updatedAt: new Date() },
+      { new: true }
+    ).lean();
+
     return updated;
   }
 
-  delete(collection, id) {
-    if (!this.data[collection]) return false;
-    const initialLen = this.data[collection].length;
-    this.data[collection] = this.data[collection].filter(item => item.id !== id);
-    const deleted = this.data[collection].length < initialLen;
-    if (deleted) this.save();
-    return deleted;
+  async delete(collection, id) {
+    const Model = this.getModel(collection);
+    if (!Model) return false;
+
+    const res = await Model.deleteOne({ id });
+    return res.deletedCount > 0;
   }
 }
 

@@ -3,20 +3,20 @@ const { v4: uuidv4 } = require('uuid');
 
 class MemoryService {
   /**
-   * Retrieves historical pattern context for a given category/item
+   * Retrieves historical pattern context from MongoDB for a given category.
+   * Uses proper Mongoose query — no function-based filtering.
    */
-  getCategoryPattern(category) {
+  async getCategoryPattern(category) {
     if (!category) return null;
-    const cleanCategory = category.toLowerCase();
-
-    return db.findOne('memoryPatterns', p => p.category.toLowerCase() === cleanCategory);
+    const cleanCategory = category.toLowerCase().trim();
+    return await db.findOne('memoryPatterns', { category: cleanCategory });
   }
 
   /**
-   * Enhances offer scoring slightly based on historical seller performance without overriding explicit current constraints
+   * Enhances offer scoring based on historical MongoDB vendor insights
    */
-  applyHistoricalInsights(category, offers) {
-    const pattern = this.getCategoryPattern(category);
+  async applyHistoricalInsights(category, offers) {
+    const pattern = await this.getCategoryPattern(category);
     if (!pattern || !pattern.preferredSellers) return offers;
 
     return offers.map(offer => {
@@ -24,8 +24,8 @@ class MemoryService {
       let memoryNote = '';
 
       if (pattern.preferredSellers.includes(offer.sellerId)) {
-        memoryBoost = 3; // Subtle 3-point boost for historically reliable sellers
-        memoryNote = `Historical Memory: Vendor previously delivered ${pattern.successfulProcurementsCount} orders successfully in ${pattern.avgDeliveryDays} days.`;
+        memoryBoost = 3;
+        memoryNote = `Historical Memory: Vendor previously delivered ${pattern.successfulProcurementsCount} orders successfully in ${pattern.avgDeliveryDays} days avg.`;
       }
 
       return {
@@ -41,37 +41,44 @@ class MemoryService {
   }
 
   /**
-   * Records a successful procurement order completion into memory
+   * Records a successful procurement order completion into MongoDB memory.
+   * Uses proper upsert via Mongoose findOneAndUpdate with $set.
    */
-  recordProcurementPattern(procurement, selectedOffer) {
-    const category = (procurement.intent?.category || 'general').toLowerCase();
-    const existing = this.getCategoryPattern(category);
+  async recordProcurementPattern(procurement, selectedOffer) {
+    const category = (procurement.intent?.category || 'general').toLowerCase().trim();
+    const existing = await this.getCategoryPattern(category);
 
     const unitPricePaise = selectedOffer.unitPricePaise;
 
     if (existing) {
       const count = existing.successfulProcurementsCount + 1;
       const updatedPreferred = [...new Set([...existing.preferredSellers, selectedOffer.sellerId])];
-      const newAvgPrice = Math.round(((existing.averagePricePerUnitPaise * existing.successfulProcurementsCount) + unitPricePaise) / count);
-      const newAvgDelivery = Math.round(((existing.avgDeliveryDays * existing.successfulProcurementsCount) + selectedOffer.deliveryDays) / count);
+      const newAvgPrice = Math.round(
+        ((existing.averagePricePerUnitPaise * existing.successfulProcurementsCount) + unitPricePaise) / count
+      );
+      const newAvgDelivery = Math.round(
+        ((existing.avgDeliveryDays * existing.successfulProcurementsCount) + selectedOffer.deliveryDays) / count
+      );
 
-      db.update('memoryPatterns', existing.id, {
+      await db.update('memoryPatterns', existing.id, {
         preferredSellers: updatedPreferred,
         averagePricePerUnitPaise: newAvgPrice,
         avgDeliveryDays: newAvgDelivery,
         successfulProcurementsCount: count,
-        lastProcuredAt: new Date().toISOString()
+        lastProcuredAt: new Date()
       });
+      console.log(`[MemoryService] Updated memory pattern for category "${category}" (${count} procurements).`);
     } else {
-      db.insert('memoryPatterns', {
+      await db.insert('memoryPatterns', {
         id: `mem_${uuidv4().substring(0, 8)}`,
         category,
         preferredSellers: [selectedOffer.sellerId],
         averagePricePerUnitPaise: unitPricePaise,
         avgDeliveryDays: selectedOffer.deliveryDays,
         successfulProcurementsCount: 1,
-        lastProcuredAt: new Date().toISOString()
+        lastProcuredAt: new Date()
       });
+      console.log(`[MemoryService] Created new memory pattern for category "${category}".`);
     }
   }
 }

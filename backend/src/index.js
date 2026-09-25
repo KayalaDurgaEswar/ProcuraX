@@ -1,5 +1,6 @@
 const app = require('./app');
 const config = require('./config');
+const { connectDB } = require('./db/mongoConfig');
 
 const DEFAULT_PORT = parseInt(config.port, 10) || 3000;
 
@@ -14,6 +15,7 @@ function startServer(port) {
 🧠 AI LLM Provider:      ${config.ai.provider} (Model: ${config.ai.model})
 ⚡ Commerce Provider:    ${config.beckn.defaultProvider.toUpperCase()} Network Node
 🛡️ Auto-Approval Limit:   ₹${(config.approvalPolicy.autoApprovalLimitPaise / 100).toLocaleString('en-IN')}
+🗄️  Database:             MongoDB (${config.db.mongoUri})
 ============================================================
     `);
   });
@@ -30,4 +32,15 @@ function startServer(port) {
   });
 }
 
-startServer(DEFAULT_PORT);
+async function main() {
+  try {
+    // Connect to MongoDB FIRST before accepting any HTTP traffic
+    await connectDB();
+    startServer(DEFAULT_PORT);
+  } catch (err) {
+    console.error('[FATAL] Failed to connect to MongoDB. Cannot start server.', err);
+    process.exit(1);
+  }
+}
+
+main();
