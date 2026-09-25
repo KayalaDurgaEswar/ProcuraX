@@ -49,6 +49,18 @@ import { ProcurementRequest } from '../../models/procurement.model';
     }
     .intent-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
     .intent-value { font-size: 14px; font-weight: 600; color: var(--text-main); }
+
+    @media (max-width: 720px) {
+      .intent-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 460px) {
+      .intent-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   `]
 })
 export class IntentCardComponent {

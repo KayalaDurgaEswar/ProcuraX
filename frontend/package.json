@@ -4,10 +4,10 @@
   "description": "Angular Enterprise UI Dashboard for Beckn AI Procurement Agent",
   "private": true,
   "scripts": {
-    "ng": "NG_CLI_ANALYTICS=false ng",
-    "start": "NG_CLI_ANALYTICS=false ng serve",
-    "build": "NG_CLI_ANALYTICS=false ng build --configuration production",
-    "watch": "NG_CLI_ANALYTICS=false ng build --watch --configuration development"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build --configuration production",
+    "watch": "ng build --watch --configuration development"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",
