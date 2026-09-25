@@ -8,14 +8,14 @@ import { Order } from '../../models/procurement.model';
   imports: [CommonModule],
   template: `
     <div class="glass-card order-card">
-      <h3>📦 Beckn Order Tracking</h3>
+      <h3><span class="icon-order"></span> Beckn Order Tracking</h3>
 
       <div *ngIf="order" class="order-body">
         <div class="order-id">Beckn ID: {{ order.becknOrderId }}</div>
         <div class="order-detail">Seller: {{ order.sellerName }}</div>
         <div class="order-detail">Fulfillment: {{ order.fulfillmentStatus }}</div>
         <div class="order-link">
-          <a [href]="order.trackingUrl" target="_blank">🔗 Live Tracking Link</a>
+          <a [href]="order.trackingUrl" target="_blank">Live Tracking</a>
         </div>
       </div>
 

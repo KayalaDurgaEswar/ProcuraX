@@ -156,6 +156,6 @@ test('5. End-to-End Autonomous Agent Execution Loop', async () => {
   assert.ok(req.id);
   assert.ok(['PENDING_APPROVAL', 'APPROVED', 'TRACKING'].includes(req.state));
 
-  const trail = auditService.getProcurementAuditTrail(req.id);
+  const trail = await auditService.getProcurementAuditTrail(req.id);
   assert.ok(trail.length >= 4);
 });

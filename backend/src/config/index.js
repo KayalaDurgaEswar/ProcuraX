@@ -17,10 +17,10 @@ module.exports = {
   },
   
   beckn: {
-    defaultProvider: process.env.DEFAULT_NETWORK_PROVIDER || 'mock',
-    gatewayUrl: process.env.BECKN_GATEWAY_URL || 'http://localhost:3000/beckn/gateway',
+    defaultProvider: process.env.DEFAULT_NETWORK_PROVIDER || 'real',
+    gatewayUrl: process.env.BECKN_GATEWAY_URL || 'https://gateway.beckn.io/protocol/v1',
     bapId: process.env.BECKN_BAP_ID || 'procure-ai-bap.domain.org',
-    bapUri: process.env.BECKN_BAP_URI || 'http://localhost:3000/beckn/bap'
+    bapUri: process.env.BECKN_BAP_URI || 'https://api.yourdomain.com/beckn/bap'
   },
 
   approvalPolicy: {

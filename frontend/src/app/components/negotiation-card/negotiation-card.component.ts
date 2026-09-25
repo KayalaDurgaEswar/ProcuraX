@@ -8,7 +8,7 @@ import { Negotiation } from '../../models/procurement.model';
   imports: [CommonModule],
   template: `
     <div class="glass-card negotiation-card">
-      <h3>🤝 Autonomous Negotiation Log</h3>
+      <h3><span class="icon-negotiation"></span> Autonomous Negotiation Log</h3>
 
       <div *ngIf="lastNegotiation" class="neg-body">
         <div style="font-size:12px; margin-bottom:6px;">

@@ -43,7 +43,8 @@ class ComparisonEngine {
 
       // 5. Specs Match Score (0 - 100)
       let specsScore = 95;
-      if (offer.itemTitle.toLowerCase().includes('i7') && request.requirements?.processor?.toLowerCase().includes('i7')) {
+      const requirements = request.intent?.requirements || request.requirements || {};
+      if (offer.itemTitle.toLowerCase().includes('i7') && requirements.processor?.toLowerCase().includes('i7')) {
         specsScore += 5;
       }
 

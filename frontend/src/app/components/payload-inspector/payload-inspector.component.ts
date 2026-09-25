@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="glass-card protocol-card">
-      <h3>🌐 Beckn Protocol Payloads</h3>
+      <h3><span class="icon-protocol"></span> Beckn Protocol Payloads</h3>
       <pre class="json-inspector">{{ formattedJson }}</pre>
     </div>
   `,

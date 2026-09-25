@@ -9,7 +9,7 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
   template: `
     <div class="glass-card offers-card">
       <div class="card-header-flex">
-        <h3>⚖️ Discovered Seller Offers (Beckn Network)</h3>
+        <h3><span class="icon-offers"></span> Discovered Seller Offers (Beckn Network)</h3>
         <span class="offer-count-pill">{{ offers.length }} Offers</span>
       </div>
 
@@ -19,7 +19,7 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
           class="offer-card"
           [class.top-offer]="o.id === selectedOfferId"
         >
-          <span *ngIf="o.id === selectedOfferId" class="top-badge">👑 AI TOP MATCH</span>
+          <span *ngIf="o.id === selectedOfferId" class="top-badge">AI TOP MATCH</span>
 
           <div class="offer-header">
             <div>

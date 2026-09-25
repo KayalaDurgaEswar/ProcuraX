@@ -22,6 +22,29 @@
   --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
+/* Icon Styles */
+.icon-new, .icon-history, .icon-intent, .icon-offers, .icon-approval, .icon-protocol,
+.icon-negotiation, .icon-order, .icon-audit, .icon-warning, .icon-success {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  fill: currentColor;
+}
+
+.icon-new { fill: var(--accent-blue); }
+.icon-history { fill: var(--accent-cyan); }
+.icon-intent { fill: var(--accent-purple); }
+.icon-offers { fill: var(--accent-emerald); }
+.icon-approval { fill: var(--accent-amber); }
+.icon-protocol { fill: var(--accent-cyan); }
+.icon-negotiation { fill: var(--accent-blue); }
+.icon-order { fill: var(--accent-emerald); }
+.icon-audit { fill: var(--accent-rose); }
+.icon-warning { fill: var(--accent-amber); }
+.icon-success { fill: var(--accent-emerald); }
+
 * {
   box-sizing: border-box;
   margin: 0;

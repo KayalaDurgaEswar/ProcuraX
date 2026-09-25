@@ -8,7 +8,13 @@ import { CommonModule } from '@angular/common';
   template: `
     <header class="app-header">
       <div class="brand">
-        <div class="logo-icon"></div>
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <div class="brand-text">
           <h1>ProcuraX <span class="badge-beckn">ONDC / Beckn Protocol</span></h1>
           <p>Autonomous AI Enterprise Procurement Platform</p>
@@ -17,7 +23,7 @@ import { CommonModule } from '@angular/common';
       <div class="header-controls">
         <div class="status-indicator">
           <span class="status-dot green"></span>
-          <span>Beckn Sandbox Node: <strong>ACTIVE</strong></span>
+          <span>Beckn Node: <strong>Active</strong></span>
         </div>
         <div class="user-pill">
           <span class="avatar">DE</span>
