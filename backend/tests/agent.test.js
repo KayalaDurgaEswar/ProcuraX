@@ -1,11 +1,21 @@
-const test = require('node:test');
+const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
+const { connectDB, disconnectDB } = require('../src/db/mongoConfig');
 const llmProvider = require('../src/services/ai/llmProvider');
 const comparisonEngine = require('../src/services/comparison/comparisonEngine');
 const negotiationEngine = require('../src/services/negotiation/negotiationEngine');
 const approvalEngine = require('../src/services/approval/approvalEngine');
 const auditService = require('../src/services/audit/auditService');
 const procurementAgent = require('../src/services/agent/procurementAgent');
+
+before(async () => {
+  process.env.NODE_ENV = 'test';
+  await connectDB();
+});
+
+after(async () => {
+  await disconnectDB();
+});
 
 test('1. Natural Language Intent Extraction Test', async () => {
   const prompt = 'Procure 50 laptops with at least 16GB RAM, i7 processor, delivery to Hyderabad within 7 days, budget below ₹5,00,000.';
@@ -156,6 +166,6 @@ test('5. End-to-End Autonomous Agent Execution Loop', async () => {
   assert.ok(req.id);
   assert.ok(['PENDING_APPROVAL', 'APPROVED', 'TRACKING'].includes(req.state));
 
-  const trail = auditService.getProcurementAuditTrail(req.id);
+  const trail = await auditService.getProcurementAuditTrail(req.id);
   assert.ok(trail.length >= 4);
 });

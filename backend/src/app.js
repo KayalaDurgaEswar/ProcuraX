@@ -8,7 +8,11 @@ const becknRoutes = require('./routes/becknRoutes');
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({
+  verify: (req, res, buffer) => {
+    req.rawBody = Buffer.from(buffer);
+  }
+}));
 
 // Determine Angular build directory path
 const angularBrowserPath = path.join(__dirname, '../../frontend/dist/procure-ai-angular/browser');

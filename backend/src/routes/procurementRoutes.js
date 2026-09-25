@@ -141,7 +141,13 @@ router.get('/orders/:id/status', async (req, res) => {
     const order = await db.findById('orders', orderId);
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
-    const statusResult = await becknProvider.status(order.becknOrderId, order.procurementId);
+    const procurement = await db.findById('procurementRequests', order.procurementId);
+    const correlationId = procurement?.correlationId || order.procurementId;
+    const statusResult = await becknProvider.status(
+      order.becknOrderId,
+      correlationId,
+      order.networkContext || null
+    );
     return res.json({ order, becknTracking: statusResult });
   } catch (err) {
     return res.status(500).json({ error: err.message });
