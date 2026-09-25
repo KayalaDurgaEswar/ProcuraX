@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database Data Files
+data/db.json
+
+# Build Outputs
+dist/
+tmp/
+out-tsc/
+*.tsbuildinfo
+
+# OS Files
+.DS_Store
+Thumbs.db

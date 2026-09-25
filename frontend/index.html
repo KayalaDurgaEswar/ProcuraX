@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beckn Autonomous AI Procurement Agent | Enterprise Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header / Navbar -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon">🤖</div>
+        <div class="brand-text">
+          <h1>ProcureAI <span class="badge-beckn">ONDC / Beckn Protocol</span></h1>
+          <p>Autonomous Enterprise AI Procurement Agent</p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <div class="status-indicator">
+          <span class="status-dot green"></span>
+          <span>Beckn Sandbox Node: <strong>ACTIVE</strong></span>
+        </div>
+        <div class="user-pill">
+          <span class="avatar">SC</span>
+          <div class="user-info">
+            <span class="user-name">Sarah Connor</span>
+            <span class="user-role">Procurement Manager (Limit: ₹5,00,000)</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <div class="main-layout">
+      <!-- Left Sidebar: Active Procurements & New Request -->
+      <aside class="sidebar">
+        <div class="card new-request-card">
+          <h3>⚡ New Procurement Request</h3>
+          <p class="subtitle">Enter natural language specifications & constraints</p>
+
+          <form id="procurementForm">
+            <textarea id="promptInput" rows="4" placeholder="e.g. Procure 50 laptops with 16GB RAM, i7 processor, delivery to Hyderabad within 7 days, budget ₹5,00,000."></textarea>
+
+            <div class="quick-samples">
+              <span class="sample-tag" onclick="fillSample(1)">50 Laptops (Hyderabad)</span>
+              <span class="sample-tag" onclick="fillSample(2)">15 Servers (Express)</span>
+              <span class="sample-tag" onclick="fillSample(3)">100 Monitors (Budget)</span>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">
+              <span>🚀 Launch Agent Workflow</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="card recent-requests-card">
+          <div class="card-header-flex">
+            <h3>📋 Procurement History</h3>
+            <button class="btn-icon" onclick="loadProcurements()" title="Refresh">🔄</button>
+          </div>
+          <div id="requestList" class="request-list">
+            <!-- Dynamically Populated -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center & Right: Execution Workspace -->
+      <main class="workspace" id="workspace">
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">🛒</div>
+          <h2>No Procurement Request Selected</h2>
+          <p>Enter a natural language request on the left or select an existing procurement run from history to inspect the autonomous agent state machine.</p>
+        </div>
+
+        <!-- Active Procurement Workspace (Hidden by default) -->
+        <div id="activeWorkspace" class="active-workspace hidden">
+          <!-- Request Header Bar -->
+          <div class="card request-summary-card">
+            <div class="req-header-row">
+              <div>
+                <span class="req-id" id="reqId">PROC-0000</span>
+                <h2 id="reqCategoryTitle">Laptop Procurement</h2>
+                <p id="reqRawPrompt" class="req-prompt">"..."</p>
+              </div>
+              <div class="req-badge-group">
+                <span class="state-badge" id="reqStateBadge">RECEIVED</span>
+                <div class="correlation-pill">Correlation ID: <span id="reqCorrelationId">...</span></div>
+              </div>
+            </div>
+
+            <!-- Agent State Machine Stepper -->
+            <div class="stepper-wrapper">
+              <div class="stepper" id="agentStepper">
+                <!-- Stepper Nodes Generated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid Columns for Inspector -->
+          <div class="workspace-grid">
+            <!-- Left Column: Intent & Offers -->
+            <div class="grid-col main-col">
+              <!-- Intent Extraction Debugger Card -->
+              <div class="card intent-card">
+                <h3>🔍 Structured Intent & Requirements</h3>
+                <div class="intent-grid" id="intentDetails">
+                  <!-- Generated dynamically -->
+                </div>
+              </div>
+
+              <!-- Offer Comparison Matrix -->
+              <div class="card offers-card">
+                <div class="card-header-flex">
+                  <h3>⚖️ Discovered Seller Offers (Beckn Network)</h3>
+                  <span class="offer-count-pill" id="offerCountPill">0 Offers</span>
+                </div>
+                <div id="offersContainer" class="offers-container">
+                  <!-- Offers generated dynamically -->
+                </div>
+              </div>
+
+              <!-- AI Strategic Reasoning & Recommendation -->
+              <div class="card reasoning-card">
+                <h3>🧠 AI Strategic Recommendation & Risk Analysis</h3>
+                <div class="reasoning-box" id="reasoningText">
+                  <p>Agent is evaluating discovered seller network payloads...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Action, Approval & Audit -->
+            <div class="grid-col side-col">
+              <!-- Approval Action Panel (Human-in-the-Loop) -->
+              <div class="card approval-card" id="approvalCard">
+                <h3>🛡️ Human Approval Gate</h3>
+                <div id="approvalContent">
+                  <p class="approval-text">Evaluating enterprise monetary threshold policy...</p>
+                </div>
+              </div>
+
+              <!-- Negotiation History Card -->
+              <div class="card negotiation-card" id="negotiationCard">
+                <h3>🤝 Autonomous Negotiation Log</h3>
+                <div id="negotiationContent">
+                  <p class="text-muted">No negotiation required or executed yet.</p>
+                </div>
+              </div>
+
+              <!-- Order & Tracking Status Card -->
+              <div class="card order-card" id="orderCard">
+                <h3>📦 Beckn Order Tracking</h3>
+                <div id="orderContent">
+                  <p class="text-muted">Order not placed yet.</p>
+                </div>
+              </div>
+
+              <!-- Immutable Audit Trail -->
+              <div class="card audit-card">
+                <h3>📜 Immutable Audit Log</h3>
+                <div class="audit-timeline" id="auditTimeline">
+                  <!-- Timeline events generated dynamically -->
+                </div>
+              </div>
+
+              <!-- Beckn Payload Protocol Inspector -->
+              <div class="card protocol-card">
+                <h3>🌐 Beckn Protocol Payloads</h3>
+                <pre class="json-inspector" id="becknPayloadInspector">// Network payloads will appear here</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

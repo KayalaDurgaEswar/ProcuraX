@@ -1,0 +1,153 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ProcurementService } from './services/procurement.service';
+import { ProcurementDetail } from './models/procurement.model';
+
+import { HeaderComponent } from './components/header/header.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { StepperComponent } from './components/stepper/stepper.component';
+import { IntentCardComponent } from './components/intent-card/intent-card.component';
+import { OffersMatrixComponent } from './components/offers-matrix/offers-matrix.component';
+import { ApprovalCardComponent } from './components/approval-card/approval-card.component';
+import { NegotiationCardComponent } from './components/negotiation-card/negotiation-card.component';
+import { OrderCardComponent } from './components/order-card/order-card.component';
+import { AuditTimelineComponent } from './components/audit-timeline/audit-timeline.component';
+import { PayloadInspectorComponent } from './components/payload-inspector/payload-inspector.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    SidebarComponent,
+    StepperComponent,
+    IntentCardComponent,
+    OffersMatrixComponent,
+    ApprovalCardComponent,
+    NegotiationCardComponent,
+    OrderCardComponent,
+    AuditTimelineComponent,
+    PayloadInspectorComponent
+  ],
+  template: `
+    <div class="app-container">
+      <app-header></app-header>
+
+      <div class="main-layout">
+        <app-sidebar></app-sidebar>
+
+        <main class="workspace">
+          <!-- Empty State -->
+          <div *ngIf="!detail" class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <h2>No Procurement Request Selected</h2>
+            <p>Enter a natural language request on the left or select an existing procurement run from history to inspect the autonomous agent state machine.</p>
+          </div>
+
+          <!-- Active Procurement Workspace -->
+          <div *ngIf="detail" class="active-workspace">
+            <!-- Summary Bar & Stepper -->
+            <div class="glass-card request-summary-card">
+              <div class="req-header-row">
+                <div>
+                  <span class="req-id">{{ detail.request.id }}</span>
+                  <h2>
+                    {{ (detail.request.intent?.category || 'Procurement') | uppercase }} Batch ({{ detail.request.quantity || 0 }} Units)
+                  </h2>
+                  <p class="req-prompt">"{{ detail.request.rawPrompt }}"</p>
+                </div>
+                <div class="req-badge-group">
+                  <span class="state-badge">{{ detail.request.state }}</span>
+                  <div class="correlation-pill">Correlation ID: {{ detail.request.correlationId }}</div>
+                </div>
+              </div>
+
+              <app-stepper [currentState]="detail.request.state"></app-stepper>
+            </div>
+
+            <!-- Workspace Grid -->
+            <div class="workspace-grid">
+              <!-- Left Column -->
+              <div class="grid-col main-col">
+                <app-intent-card [request]="detail.request"></app-intent-card>
+
+                <app-offers-matrix
+                  [offers]="detail.offers"
+                  [selectedOfferId]="detail.request.selectedOfferId"
+                ></app-offers-matrix>
+
+                <div class="glass-card reasoning-card">
+                  <h3>🧠 AI Strategic Recommendation & Risk Analysis</h3>
+                  <div class="reasoning-box">
+                    <p>{{ detail.request.aiRecommendationReasoning || 'AI agent is compiling scoring matrices...' }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="grid-col side-col">
+                <app-approval-card [request]="detail.request"></app-approval-card>
+                <app-negotiation-card [negotiations]="detail.negotiations"></app-negotiation-card>
+                <app-order-card [order]="detail.order"></app-order-card>
+                <app-audit-timeline [auditTrail]="detail.auditTrail"></app-audit-timeline>
+                <app-payload-inspector [payload]="topBecknPayload"></app-payload-inspector>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .main-layout { display: flex; flex: 1; overflow: hidden; }
+    .workspace { flex: 1; padding: 24px; overflow-y: auto; }
+    .empty-state {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+    .empty-state h2 { font-size: 22px; color: var(--text-main); margin-bottom: 8px; }
+    .empty-state p { max-width: 440px; font-size: 14px; }
+    .active-workspace { display: flex; flex-direction: column; gap: 20px; }
+    .request-summary-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9)); }
+    .req-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .req-id { font-size: 12px; font-weight: 700; color: var(--accent-cyan); letter-spacing: 0.5px; }
+    .req-header-row h2 { font-size: 22px; margin: 4px 0; }
+    .req-prompt { font-size: 13px; color: var(--text-muted); font-style: italic; }
+    .req-badge-group { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .state-badge { font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; background: var(--accent-blue); color: white; }
+    .correlation-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+    .workspace-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+    .grid-col { display: flex; flex-direction: column; gap: 20px; }
+    .reasoning-box {
+      background: rgba(0, 0, 0, 0.25);
+      border-left: 3px solid var(--accent-purple);
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      white-space: pre-line;
+      margin-top: 10px;
+    }
+  `]
+})
+export class AppComponent implements OnInit {
+  detail: ProcurementDetail | null = null;
+
+  constructor(private procurementService: ProcurementService) {}
+
+  ngOnInit() {
+    this.procurementService.activeDetail$.subscribe(d => this.detail = d);
+  }
+
+  get topBecknPayload(): any {
+    return this.detail?.offers?.[0]?.becknContext || null;
+  }
+}

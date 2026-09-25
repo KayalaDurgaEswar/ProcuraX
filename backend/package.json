@@ -1,0 +1,27 @@
+{
+  "name": "agentic-procurement-beckn",
+  "version": "1.0.0",
+  "description": "Autonomous AI Procurement Agent on Beckn / ONDC Protocol",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test tests/agent.test.js"
+  },
+  "keywords": [
+    "beckn",
+    "ondc",
+    "procurement",
+    "agentic-ai",
+    "ollama",
+    "autonomous-agent"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "uuid": "^9.0.1"
+  }
+}
