@@ -3,31 +3,56 @@ const config = require('../config');
 
 let memoryServer = null;
 
+async function connectMemoryDB(label = 'fallback') {
+  const { MongoMemoryServer } = require('mongodb-memory-server');
+  memoryServer = await MongoMemoryServer.create({
+    instance: { dbName: label === 'test' ? 'procurax-test' : 'procurax-fallback' }
+  });
+  const memUri = memoryServer.getUri();
+  await mongoose.connect(memUri);
+  console.log(`[MongoDB] Embedded ${label} database connected at ${memUri}`);
+}
+
+function testDatabaseUri(primaryUri) {
+  try {
+    const parsed = new URL(primaryUri);
+    parsed.pathname = '/procurax-test';
+    return parsed.toString();
+  } catch {
+    return 'mongodb://localhost:27017/procurax-test';
+  }
+}
+
 async function connectDB() {
   const primaryUri = config.db.mongoUri;
 
-  try {
-    // Attempt connecting to specified MongoDB server
-    await mongoose.connect(primaryUri, {
-      serverSelectionTimeoutMS: 2000
-    });
-    console.log(`[MongoDB] Connected to primary database at ${primaryUri}`);
-  } catch (err) {
-    console.warn(`[MongoDB] Could not connect to ${primaryUri} (${err.message}). Launching embedded MongoDB server...`);
-    
+  if (process.env.NODE_ENV === 'test') {
+    const isolatedUri = testDatabaseUri(primaryUri);
     try {
-      const { MongoMemoryServer } = require('mongodb-memory-server');
-      memoryServer = await MongoMemoryServer.create();
-      const memUri = memoryServer.getUri();
-      await mongoose.connect(memUri);
-      console.log(`[MongoDB] Embedded MongoMemoryServer connected successfully at ${memUri}`);
-    } catch (memErr) {
-      console.error('[MongoDB] Failed to start embedded MongoDB server:', memErr.message);
-      throw memErr;
+      await mongoose.connect(isolatedUri, { serverSelectionTimeoutMS: 2000 });
+      console.log(`[MongoDB] Connected to isolated test database at ${isolatedUri}`);
+    } catch (err) {
+      console.warn(
+        `[MongoDB] Test database unavailable (${err.message}). ` +
+        'Launching embedded test database...'
+      );
+      await connectMemoryDB('test');
+    }
+  } else {
+    try {
+      await mongoose.connect(primaryUri, {
+        serverSelectionTimeoutMS: 2000
+      });
+      console.log(`[MongoDB] Connected to primary database at ${primaryUri}`);
+    } catch (err) {
+      console.warn(
+        `[MongoDB] Could not connect to ${primaryUri} (${err.message}). ` +
+        'Launching embedded fallback database...'
+      );
+      await connectMemoryDB('fallback');
     }
   }
 
-  // Seed default organizations and users if empty
   const models = require('../models/mongoModels');
   const userCount = await models.User.countDocuments();
   if (userCount === 0) {
@@ -78,7 +103,12 @@ async function seedInitialMongoData() {
 }
 
 async function disconnectDB() {
+  if (process.env.NODE_ENV === 'test' && mongoose.connection.readyState === 1) {
+    await mongoose.connection.dropDatabase();
+  }
+
   await mongoose.disconnect();
+
   if (memoryServer) {
     await memoryServer.stop();
     memoryServer = null;
