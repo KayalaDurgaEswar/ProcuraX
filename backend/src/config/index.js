@@ -28,7 +28,17 @@ module.exports = {
     requestTimeoutMs: parseInt(process.env.BECKN_REQUEST_TIMEOUT_MS || '5000', 10),
     callbackTimeoutMs: parseInt(process.env.BECKN_CALLBACK_TIMEOUT_MS || '7000', 10),
     callbackSettleMs: parseInt(process.env.BECKN_CALLBACK_SETTLE_MS || '350', 10),
-    allowMockFallback: process.env.BECKN_ALLOW_MOCK_FALLBACK === 'true'
+    transactionTtlMs: parseInt(process.env.BECKN_TRANSACTION_TTL_MS || '600000', 10),
+    allowMockFallback: process.env.BECKN_ALLOW_MOCK_FALLBACK === 'true',
+    allowUnsignedCallbacks: process.env.BECKN_ALLOW_UNSIGNED_CALLBACKS === 'true',
+    signatureMaxAgeSeconds: parseInt(process.env.BECKN_SIGNATURE_MAX_AGE_SECONDS || '3600', 10),
+    callbackPublicKeys: (() => {
+      try {
+        return JSON.parse(process.env.BECKN_CALLBACK_PUBLIC_KEYS_JSON || '{}');
+      } catch {
+        throw new Error('BECKN_CALLBACK_PUBLIC_KEYS_JSON must be valid JSON');
+      }
+    })()
   },
 
   approvalPolicy: {
