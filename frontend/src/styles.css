@@ -1,28 +1,40 @@
 :root {
-  --bg-primary: #000000;
-  --bg-card: rgba(20, 20, 23, 0.65);
+  --bg-primary: #050506;
+  --bg-secondary: #0b0b0d;
+  --bg-card: rgba(22, 22, 26, 0.68);
+  --bg-card-strong: rgba(29, 29, 34, 0.82);
   --bg-card-border: rgba(255, 255, 255, 0.14);
-  --bg-glass-shine: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.01) 100%);
+  --bg-glass-shine: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
   --bg-input: rgba(255, 255, 255, 0.06);
 
   --accent-white: #ffffff;
   --accent-silver: #e4e4e7;
   --accent-zinc: #a1a1aa;
+  --accent-blue: #60a5fa;
+  --accent-purple: #a78bfa;
   --accent-cyan: #38bdf8;
   --accent-emerald: #34d399;
   --accent-amber: #fbbf24;
-  --accent-rose: #f87171;
+  --accent-rose: #fb7185;
 
-  --text-main: #ffffff;
+  --text-main: #fafafa;
   --text-muted: #a1a1aa;
   --text-dim: #71717a;
 
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 24px;
+  --radius-xl: 30px;
   --radius-pill: 9999px;
 
-  --shadow-iphone-glass: 0 10px 30px -5px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+  --shadow-iphone-glass:
+    0 18px 60px -22px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.24);
 }
 
 * {
@@ -33,83 +45,166 @@
   -webkit-font-smoothing: antialiased;
 }
 
+html {
+  color-scheme: dark;
+  background: var(--bg-primary);
+}
+
 body {
   background-color: var(--bg-primary);
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 0%, transparent 40%);
+  background-image:
+    radial-gradient(circle at 8% 5%, rgba(96, 165, 250, 0.08) 0%, transparent 34%),
+    radial-gradient(circle at 88% 18%, rgba(167, 139, 250, 0.06) 0%, transparent 32%),
+    radial-gradient(circle at 65% 88%, rgba(52, 211, 153, 0.045) 0%, transparent 28%);
   color: var(--text-main);
   min-height: 100vh;
   overflow-x: hidden;
 }
 
+button,
+textarea,
+input,
+select {
+  font: inherit;
+}
+
+button,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+a {
+  color: var(--accent-blue);
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-/* iPhone Glass Door Card styling */
 .glass-card {
-  background: var(--bg-card);
-  background-image: var(--bg-glass-shine);
+  background:
+    var(--bg-glass-shine),
+    var(--bg-card);
   border: 1px solid var(--bg-card-border);
   border-radius: var(--radius-lg);
   padding: 20px;
-  backdrop-filter: blur(25px) saturate(190%);
-  -webkit-backdrop-filter: blur(25px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   box-shadow: var(--shadow-iphone-glass);
   position: relative;
   overflow: hidden;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  isolation: isolate;
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .glass-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.38),
+    transparent
+  );
+  pointer-events: none;
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 14px 40px -5px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 22px 64px -26px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
 }
 
-/* iPhone Pill Buttons */
 .btn-primary {
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(220, 220, 225, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  color: #000000;
-  padding: 12px 20px;
+  min-height: 44px;
+  background: linear-gradient(180deg, #ffffff 0%, #e4e4e7 100%);
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  color: #09090b;
+  padding: 11px 20px;
   border-radius: var(--radius-pill);
-  font-weight: 700;
+  font-weight: 750;
   font-size: 14px;
   letter-spacing: -0.2px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
+  transition:
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+  box-shadow:
+    0 7px 22px rgba(255, 255, 255, 0.10),
+    inset 0 1px 0 #ffffff;
 }
 
-.btn-primary:hover {
-  transform: scale(1.02);
-  background: #ffffff;
-  box-shadow: 0 6px 25px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 1);
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 9px 28px rgba(255, 255, 255, 0.18),
+    inset 0 1px 0 #ffffff;
 }
 
-.btn-primary:active {
-  transform: scale(0.98);
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
 }
 
 .btn-primary:disabled {
-  opacity: 0.4;
+  opacity: 0.42;
   cursor: not-allowed;
-  transform: none;
 }
 
-.hidden { display: none !important; }
+.text-muted {
+  color: var(--text-muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 720px) {
+  .glass-card {
+    border-radius: 20px;
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

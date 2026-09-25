@@ -14,9 +14,12 @@ import { Order } from '../../models/procurement.model';
         <div class="order-id">Beckn ID: {{ order.becknOrderId }}</div>
         <div class="order-detail">Seller: {{ order.sellerName }}</div>
         <div class="order-detail">Fulfillment: {{ order.fulfillmentStatus }}</div>
-        <div class="order-link">
-          <a [href]="order.trackingUrl" target="_blank">Live Tracking</a>
+        <div class="order-link" *ngIf="order.trackingUrl; else trackingUnavailable">
+          <a [href]="order.trackingUrl" target="_blank" rel="noopener noreferrer">Live Tracking</a>
         </div>
+        <ng-template #trackingUnavailable>
+          <div class="tracking-pending">Tracking link not available yet.</div>
+        </ng-template>
       </div>
 
       <div *ngIf="!order" class="order-body">
@@ -30,6 +33,8 @@ import { Order } from '../../models/procurement.model';
     .order-detail { font-size: 12px; color: var(--text-main); }
     .order-link { font-size: 11px; margin-top: 8px; }
     .order-link a { color: var(--accent-blue); text-decoration: none; }
+    .order-link a:hover { text-decoration: underline; }
+    .tracking-pending { font-size: 11px; margin-top: 8px; color: var(--text-dim); }
   `]
 })
 export class OrderCardComponent {

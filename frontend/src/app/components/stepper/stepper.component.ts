@@ -29,7 +29,7 @@ import { CommonModule } from '@angular/common';
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: #334155;
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-muted);
       display: flex;
       align-items: center;
@@ -56,7 +56,7 @@ import { CommonModule } from '@angular/common';
       left: 50%;
       width: 100%;
       height: 3px;
-      background: #334155;
+      background: rgba(255, 255, 255, 0.08);
       z-index: 1;
     }
     .step-node.completed .step-line { background: var(--accent-emerald); }

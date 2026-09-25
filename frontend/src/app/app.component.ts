@@ -106,8 +106,9 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
     </div>
   `,
   styles: [`
-    .main-layout { display: flex; flex: 1; overflow: hidden; }
-    .workspace { flex: 1; padding: 24px; overflow-y: auto; }
+    .main-layout { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+    app-sidebar { display: block; flex: 0 0 360px; min-width: 0; }
+    .workspace { flex: 1; width: 100%; min-width: 0; padding: 24px; overflow-y: auto; }
     .empty-state {
       height: 100%;
       display: flex;
@@ -117,11 +118,27 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
       text-align: center;
       color: var(--text-muted);
     }
-    .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+    .empty-icon {
+      display: grid;
+      place-items: center;
+      width: 88px;
+      height: 88px;
+      margin-bottom: 18px;
+      border-radius: 28px;
+      color: var(--accent-silver);
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid var(--bg-card-border);
+      box-shadow: var(--shadow-iphone-glass);
+    }
     .empty-state h2 { font-size: 22px; color: var(--text-main); margin-bottom: 8px; }
     .empty-state p { max-width: 440px; font-size: 14px; }
     .active-workspace { display: flex; flex-direction: column; gap: 20px; }
-    .request-summary-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9)); }
+    .request-summary-card {
+      background:
+        linear-gradient(135deg, rgba(96, 165, 250, 0.055), transparent 44%),
+        var(--bg-glass-shine),
+        var(--bg-card-strong);
+    }
     .req-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
     .req-id { font-size: 12px; font-weight: 700; color: var(--accent-cyan); letter-spacing: 0.5px; }
     .req-header-row h2 { font-size: 22px; margin: 4px 0; }
@@ -129,18 +146,87 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
     .req-badge-group { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
     .state-badge { font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; background: var(--accent-blue); color: white; }
     .correlation-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
-    .workspace-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+      gap: 20px;
+      align-items: start;
+    }
     .grid-col { display: flex; flex-direction: column; gap: 20px; }
     .reasoning-box {
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(167, 139, 250, 0.18);
       border-left: 3px solid var(--accent-purple);
       padding: 14px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-md);
       font-size: 13px;
       line-height: 1.6;
-      color: #cbd5e1;
+      color: var(--accent-silver);
       white-space: pre-line;
       margin-top: 10px;
+    }
+
+    @media (max-width: 1180px) {
+      .workspace-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .side-col {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .main-layout {
+        display: block;
+        overflow: visible;
+      }
+
+      app-sidebar {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .workspace {
+        width: 100%;
+        max-width: 100vw;
+        padding: 14px;
+        overflow: hidden;
+      }
+
+      .empty-state {
+        min-height: 360px;
+        padding: 30px 12px;
+      }
+
+      .req-header-row {
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .req-badge-group {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .side-col {
+        display: flex;
+      }
+
+      .req-header-row h2 {
+        font-size: 19px;
+      }
+
+      .req-prompt {
+        line-height: 1.5;
+      }
+
+      .correlation-pill {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+      }
     }
   `]
 })
