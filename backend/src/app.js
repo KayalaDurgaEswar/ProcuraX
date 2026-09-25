@@ -14,20 +14,31 @@ app.use(express.json({
   }
 }));
 
-// Determine Angular build directory path
-const angularBrowserPath = path.join(__dirname, '../../frontend/dist/procure-ai-angular/browser');
-const angularDistPath = path.join(__dirname, '../../frontend/dist/procure-ai-angular');
-const rawFrontendPath = path.join(__dirname, '../../frontend');
+// Serve only the canonical Angular production build. Never expose the raw
+// frontend source tree as a fallback.
+const angularBrowserPath = path.join(
+  __dirname,
+  '../../frontend/dist/procure-ai-angular/browser'
+);
+const angularDistPath = path.join(
+  __dirname,
+  '../../frontend/dist/procure-ai-angular'
+);
 
-let staticPath = rawFrontendPath;
-if (fs.existsSync(angularBrowserPath)) {
-  staticPath = angularBrowserPath;
-} else if (fs.existsSync(angularDistPath)) {
-  staticPath = angularDistPath;
+const staticPath = fs.existsSync(path.join(angularBrowserPath, 'index.html'))
+  ? angularBrowserPath
+  : fs.existsSync(path.join(angularDistPath, 'index.html'))
+    ? angularDistPath
+    : null;
+
+if (staticPath) {
+  console.log(`[Express] Serving Angular frontend from: ${staticPath}`);
+  app.use(express.static(staticPath));
+} else {
+  console.warn(
+    '[Express] Angular build not found. Run "npm run build" in frontend/ before opening the dashboard.'
+  );
 }
-
-console.log(`[Express] Serving static frontend from: ${staticPath}`);
-app.use(express.static(staticPath));
 
 // API Routes
 app.use('/api', procurementRoutes);
@@ -40,20 +51,25 @@ app.get('/health', (req, res) => {
     service: 'Agentic AI Procurement Agent',
     protocol: 'Beckn / ONDC',
     frontend: 'Angular 17 Enterprise Dashboard',
+    frontendReady: Boolean(staticPath),
     timestamp: new Date().toISOString()
   });
 });
 
-// Fallback to Angular SPA index.html
+// Angular SPA fallback.
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/beckn')) {
     return next();
   }
-  const indexPath = path.join(staticPath, 'index.html');
-  if (fs.existsSync(indexPath)) {
-    return res.sendFile(indexPath);
+
+  if (!staticPath) {
+    return res.status(503).json({
+      error: 'Angular frontend build not found',
+      action: 'Run "npm install && npm run build" inside frontend/'
+    });
   }
-  res.sendFile(path.join(rawFrontendPath, 'index.html'));
+
+  return res.sendFile(path.join(staticPath, 'index.html'));
 });
 
 module.exports = app;

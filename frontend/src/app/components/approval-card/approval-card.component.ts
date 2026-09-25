@@ -16,6 +16,9 @@ import { ProcurementService } from '../../services/procurement.service';
           <span class="icon-warning"></span> Approval Required: {{ request?.approvalRequirement?.level || 'MANAGER_APPROVAL' }}
         </div>
         <p class="approval-desc">{{ request?.approvalRequirement?.description }}</p>
+        <div class="approver-hint">
+          Approval identity: {{ approvalIdentityLabel }}
+        </div>
         <div class="approval-btn-group">
           <button class="btn-approve" (click)="onApprove()">Grant Approval</button>
           <button class="btn-reject" (click)="onReject()">Reject Order</button>
@@ -39,6 +42,14 @@ import { ProcurementService } from '../../services/procurement.service';
     .approval-warning { color: var(--accent-amber); font-weight: 600; font-size: 13px; margin-bottom: 8px; }
     .approval-success { color: var(--accent-emerald); font-weight: 600; font-size: 13px; }
     .approval-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .approver-hint {
+      margin-top: 9px;
+      padding: 7px 9px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-dim);
+      font-size: 10px;
+    }
     .approval-btn-group { display: flex; gap: 10px; margin-top: 14px; }
     .btn-approve {
       flex: 1;
@@ -71,13 +82,30 @@ export class ApprovalCardComponent {
     return ['APPROVED', 'ORDERING', 'TRACKING', 'COMPLETED'].includes(this.request?.state || '');
   }
 
+  get approvalIdentity(): string {
+    const requirement = this.request?.approvalRequirement;
+    return requirement?.level === 'ENTERPRISE_BOARD_APPROVAL'
+      ? 'user_cfo'
+      : 'user_procurement_lead';
+  }
+
+  get approvalIdentityLabel(): string {
+    return this.approvalIdentity === 'user_cfo'
+      ? 'Chief Financial Officer'
+      : 'Procurement Manager';
+  }
+
   onApprove() {
     if (!this.request) return;
-    this.procurementService.approveProcurement(this.request.id).subscribe();
+    this.procurementService
+      .approveProcurement(this.request.id, this.approvalIdentity)
+      .subscribe({ error: () => undefined });
   }
 
   onReject() {
     if (!this.request) return;
-    this.procurementService.rejectProcurement(this.request.id).subscribe();
+    this.procurementService
+      .rejectProcurement(this.request.id, this.approvalIdentity)
+      .subscribe({ error: () => undefined });
   }
 }

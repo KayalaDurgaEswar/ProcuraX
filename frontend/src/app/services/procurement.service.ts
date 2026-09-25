@@ -121,6 +121,7 @@ export class ProcurementService {
 
   approveProcurement(
     id: string,
+    approverId: string = 'user_procurement_lead',
     comments: string = 'Approved via Angular Enterprise Dashboard'
   ): Observable<any> {
     this.loadingSubject.next(true);
@@ -128,7 +129,7 @@ export class ProcurementService {
 
     return this.http
       .post(`${this.apiUrl}/procurements/${id}/approve`, {
-        approverId: 'user_procurement_lead',
+        approverId,
         comments
       })
       .pipe(
@@ -145,14 +146,15 @@ export class ProcurementService {
 
   rejectProcurement(
     id: string,
-    reason: string = 'Rejected by Manager'
+    actorId: string = 'user_procurement_lead',
+    reason: string = 'Rejected by authorized approver'
   ): Observable<any> {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
     return this.http
       .post(`${this.apiUrl}/procurements/${id}/reject`, {
-        actorId: 'user_procurement_lead',
+        actorId,
         reason
       })
       .pipe(
