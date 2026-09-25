@@ -3,9 +3,9 @@ const { v4: uuidv4 } = require('uuid');
 
 class AuditService {
   /**
-   * Logs an immutable procurement audit event
+   * Logs an immutable procurement audit event into MongoDB
    */
-  logEvent(params) {
+  async logEvent(params) {
     const {
       procurementId,
       action,
@@ -29,31 +29,31 @@ class AuditService {
       entityId,
       entityType,
       metadata,
-      timestamp: new Date().toISOString()
+      timestamp: new Date()
     };
 
-    db.insert('auditEvents', event);
+    await db.insert('auditEvents', event);
 
     if (process.env.NODE_ENV !== 'test') {
-      console.log(`[AUDIT LOG] [${event.timestamp}] [${event.correlationId.substring(0, 8)}] ${action}: ${previousState || 'NONE'} -> ${newState || 'NONE'} (${actor})`);
+      console.log(`[AUDIT LOG] [${new Date().toISOString()}] [${event.correlationId.substring(0, 8)}] ${action}: ${previousState || 'NONE'} -> ${newState || 'NONE'} (${actor})`);
     }
 
     return event;
   }
 
   /**
-   * Queries audit trail for a given procurement ID
+   * Queries audit trail for a given procurement ID from MongoDB
    */
-  getProcurementAuditTrail(procurementId) {
-    const events = db.find('auditEvents', e => e.procurementId === procurementId);
+  async getProcurementAuditTrail(procurementId) {
+    const events = await db.find('auditEvents', { procurementId });
     return events.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   }
 
   /**
-   * Queries all recent system audit events
+   * Queries all recent system audit events from MongoDB
    */
-  getAllAuditEvents(limit = 100) {
-    const events = db.find('auditEvents', () => true);
+  async getAllAuditEvents(limit = 100) {
+    const events = await db.find('auditEvents', {});
     return events
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
       .slice(0, limit);

@@ -6,6 +6,10 @@ module.exports = {
   env: process.env.NODE_ENV || 'development',
   logLevel: process.env.LOG_LEVEL || 'info',
   
+  db: {
+    mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/procurax'
+  },
+
   ai: {
     provider: process.env.LLM_PROVIDER || 'ollama', // 'ollama' | 'mock'
     ollamaBaseUrl: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',

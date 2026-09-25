@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 
 class ProcurementAgent {
   /**
-   * Main Entry Point: Creates a new procurement request and executes the autonomous state machine
+   * Main Entry Point: Creates a new procurement request and executes the autonomous state machine in MongoDB
    */
   async startProcurement(naturalLanguagePrompt, userId = 'user_procurement_lead', orgId = 'org_acme_corp_001') {
     const procurementId = `proc_${uuidv4().substring(0, 8)}`;
@@ -23,12 +23,12 @@ class ProcurementAgent {
       orgId,
       rawPrompt: naturalLanguagePrompt,
       state: 'RECEIVED',
-      createdAt: new Date().toISOString()
+      createdAt: new Date()
     };
 
-    db.insert('procurementRequests', initialRequest);
+    await db.insert('procurementRequests', initialRequest);
 
-    auditService.logEvent({
+    await auditService.logEvent({
       procurementId,
       correlationId,
       action: 'PROCUREMENT_CREATED',
@@ -45,7 +45,7 @@ class ProcurementAgent {
    * Stateful Agent Loop Step Processor
    */
   async runAgentLoop(procurementId) {
-    let request = db.findById('procurementRequests', procurementId);
+    let request = await db.findById('procurementRequests', procurementId);
     if (!request) throw new Error(`Procurement ${procurementId} not found`);
 
     const correlationId = request.correlationId;
@@ -55,7 +55,7 @@ class ProcurementAgent {
       if (request.state === 'RECEIVED') {
         const intent = await llmProvider.extractIntent(request.rawPrompt);
         
-        request = db.update('procurementRequests', procurementId, {
+        request = await db.update('procurementRequests', procurementId, {
           intent,
           quantity: intent.quantity,
           location: intent.location,
@@ -64,7 +64,7 @@ class ProcurementAgent {
           state: 'PARSED'
         });
 
-        auditService.logEvent({
+        await auditService.logEvent({
           procurementId,
           correlationId,
           action: 'INTENT_PARSED',
@@ -78,19 +78,19 @@ class ProcurementAgent {
       if (request.state === 'PARSED') {
         const isValid = request.intent && request.quantity > 0 && request.budgetPaise > 0;
         if (!isValid) {
-          db.update('procurementRequests', procurementId, { state: 'FAILED' });
-          auditService.logEvent({
+          await db.update('procurementRequests', procurementId, { state: 'FAILED' });
+          await auditService.logEvent({
             procurementId,
             correlationId,
             action: 'VALIDATION_FAILED',
             previousState: 'PARSED',
             newState: 'FAILED'
           });
-          return db.findById('procurementRequests', procurementId);
+          return await db.findById('procurementRequests', procurementId);
         }
 
-        request = db.update('procurementRequests', procurementId, { state: 'VALIDATED' });
-        auditService.logEvent({
+        request = await db.update('procurementRequests', procurementId, { state: 'VALIDATED' });
+        await auditService.logEvent({
           procurementId,
           correlationId,
           action: 'REQUIREMENTS_VALIDATED',
@@ -101,9 +101,9 @@ class ProcurementAgent {
 
       // STATE 3: VALIDATED -> SEARCHING -> OFFERS_RECEIVED
       if (request.state === 'VALIDATED') {
-        request = db.update('procurementRequests', procurementId, { state: 'SEARCHING' });
+        request = await db.update('procurementRequests', procurementId, { state: 'SEARCHING' });
         
-        auditService.logEvent({
+        await auditService.logEvent({
           procurementId,
           correlationId,
           action: 'SEARCH_STARTED',
@@ -114,20 +114,22 @@ class ProcurementAgent {
 
         const networkResult = await becknProvider.search(request.intent, correlationId);
         
-        // Save raw offers into database
-        const savedOffers = networkResult.offers.map(o => {
-          return db.insert('offers', {
+        // Save raw offers into MongoDB
+        const savedOffers = [];
+        for (const o of networkResult.offers) {
+          const saved = await db.insert('offers', {
             ...o,
             procurementId
           });
-        });
+          savedOffers.push(saved);
+        }
 
-        request = db.update('procurementRequests', procurementId, {
+        request = await db.update('procurementRequests', procurementId, {
           state: 'OFFERS_RECEIVED',
           offerCount: savedOffers.length
         });
 
-        auditService.logEvent({
+        await auditService.logEvent({
           procurementId,
           correlationId,
           action: 'SEARCH_COMPLETED',
@@ -139,30 +141,35 @@ class ProcurementAgent {
 
       // STATE 4: OFFERS_RECEIVED -> COMPARING
       if (request.state === 'OFFERS_RECEIVED') {
-        request = db.update('procurementRequests', procurementId, { state: 'COMPARING' });
+        request = await db.update('procurementRequests', procurementId, { state: 'COMPARING' });
         
-        const offers = db.find('offers', o => o.procurementId === procurementId);
+        const offers = await db.find('offers', { procurementId });
         
         // AI Evaluation & Scoring
         let scoredOffers = comparisonEngine.evaluateOffers(request, offers);
         
         // Memory Enhancement
-        scoredOffers = memoryService.applyHistoricalInsights(request.intent?.category, scoredOffers);
+        scoredOffers = await memoryService.applyHistoricalInsights(request.intent?.category, scoredOffers);
 
-        // Update offers with scores
-        scoredOffers.forEach(so => {
-          db.update('offers', so.id, so);
-        });
+        // Update offers in MongoDB with only the scored fields (safe partial update)
+        for (const so of scoredOffers) {
+          await db.update('offers', so.id, {
+            score: so.score,
+            scoreBreakdown: so.scoreBreakdown,
+            explanation: so.explanation,
+            memoryInsights: so.memoryInsights || null
+          });
+        }
 
         const selectedBestOffer = scoredOffers[0];
         const aiReasoning = await llmProvider.analyzeOffersAndReason(request, scoredOffers);
 
-        request = db.update('procurementRequests', procurementId, {
+        request = await db.update('procurementRequests', procurementId, {
           selectedOfferId: selectedBestOffer.id,
           aiRecommendationReasoning: aiReasoning
         });
 
-        auditService.logEvent({
+        await auditService.logEvent({
           procurementId,
           correlationId,
           action: 'OFFERS_COMPARED',
@@ -178,13 +185,13 @@ class ProcurementAgent {
 
       // STATE 5: COMPARING -> NEGOTIATING or PENDING_APPROVAL
       if (request.state === 'COMPARING') {
-        const bestOffer = db.findById('offers', request.selectedOfferId);
+        const bestOffer = await db.findById('offers', request.selectedOfferId);
         const negCheck = negotiationEngine.shouldNegotiate(request, bestOffer);
 
         if (negCheck.eligible) {
-          request = db.update('procurementRequests', procurementId, { state: 'NEGOTIATING' });
+          request = await db.update('procurementRequests', procurementId, { state: 'NEGOTIATING' });
 
-          auditService.logEvent({
+          await auditService.logEvent({
             procurementId,
             correlationId,
             action: 'NEGOTIATION_STARTED',
@@ -197,8 +204,8 @@ class ProcurementAgent {
           const counter = negotiationEngine.generateCounterOffer(request, bestOffer, negCheck.targetDiscountPercent);
           const sellerResponse = negotiationEngine.evaluateSellerResponse(bestOffer, counter);
 
-          // Save negotiation log
-          const negRecord = db.insert('negotiations', {
+          // Save negotiation log in MongoDB
+          await db.insert('negotiations', {
             id: `neg_${uuidv4().substring(0, 8)}`,
             procurementId,
             offerId: bestOffer.id,
@@ -209,7 +216,7 @@ class ProcurementAgent {
 
           // Update offer if price reduced
           if (sellerResponse.finalTotalPricePaise < bestOffer.totalPricePaise) {
-            db.update('offers', bestOffer.id, {
+            await db.update('offers', bestOffer.id, {
               totalPricePaise: sellerResponse.finalTotalPricePaise,
               unitPricePaise: sellerResponse.finalUnitPricePaise,
               negotiated: true,
@@ -217,7 +224,7 @@ class ProcurementAgent {
             });
           }
 
-          auditService.logEvent({
+          await auditService.logEvent({
             procurementId,
             correlationId,
             action: 'NEGOTIATION_COMPLETED',
@@ -231,16 +238,16 @@ class ProcurementAgent {
         }
 
         // Evaluate Approval policy requirement
-        const updatedBestOffer = db.findById('offers', request.selectedOfferId);
+        const updatedBestOffer = await db.findById('offers', request.selectedOfferId);
         const approvalReq = approvalEngine.evaluateRequiredApproval(updatedBestOffer.totalPricePaise);
 
         if (approvalReq.requiresHumanApproval) {
-          request = db.update('procurementRequests', procurementId, {
+          request = await db.update('procurementRequests', procurementId, {
             state: 'PENDING_APPROVAL',
             approvalRequirement: approvalReq
           });
 
-          auditService.logEvent({
+          await auditService.logEvent({
             procurementId,
             correlationId,
             action: 'APPROVAL_REQUESTED',
@@ -250,12 +257,12 @@ class ProcurementAgent {
           });
         } else {
           // Auto Approved!
-          request = db.update('procurementRequests', procurementId, {
+          request = await db.update('procurementRequests', procurementId, {
             state: 'APPROVED',
             approvalRequirement: approvalReq
           });
 
-          db.insert('approvals', {
+          await db.insert('approvals', {
             id: `app_${uuidv4().substring(0, 8)}`,
             procurementId,
             approverId: 'SYSTEM_AUTO_POLICY',
@@ -263,7 +270,7 @@ class ProcurementAgent {
             comments: approvalReq.description
           });
 
-          auditService.logEvent({
+          await auditService.logEvent({
             procurementId,
             correlationId,
             action: 'APPROVAL_GRANTED',
@@ -277,39 +284,39 @@ class ProcurementAgent {
         }
       }
 
-      return db.findById('procurementRequests', procurementId);
+      return await db.findById('procurementRequests', procurementId);
     } catch (err) {
       console.error(`[ProcurementAgent Error] ${err.message}`, err);
-      db.update('procurementRequests', procurementId, { state: 'FAILED', failureReason: err.message });
-      auditService.logEvent({
+      await db.update('procurementRequests', procurementId, { state: 'FAILED', failureReason: err.message });
+      await auditService.logEvent({
         procurementId,
         correlationId,
         action: 'AGENT_ERROR',
         newState: 'FAILED',
         metadata: { error: err.message }
       });
-      return db.findById('procurementRequests', procurementId);
+      return await db.findById('procurementRequests', procurementId);
     }
   }
 
   /**
-   * Human Approval Handler
+   * Human Approval Handler in MongoDB
    */
   async grantHumanApproval(procurementId, approverId, comments = 'Approved after managerial review') {
-    const request = db.findById('procurementRequests', procurementId);
+    const request = await db.findById('procurementRequests', procurementId);
     if (!request || request.state !== 'PENDING_APPROVAL') {
       throw new Error(`Procurement ${procurementId} is not in PENDING_APPROVAL state`);
     }
 
-    const user = db.findById('users', approverId) || { id: approverId, role: 'Procurement Manager', approvalLimitPaise: 50000000 };
-    const offer = db.findById('offers', request.selectedOfferId);
+    const user = (await db.findById('users', approverId)) || { id: approverId, role: 'Procurement Manager', approvalLimitPaise: 50000000 };
+    const offer = await db.findById('offers', request.selectedOfferId);
 
     const validation = approvalEngine.canUserApprove(user.role, user.approvalLimitPaise, offer.totalPricePaise);
     if (!validation.allowed) {
       throw new Error(`Approval rejected: ${validation.reason}`);
     }
 
-    db.insert('approvals', {
+    await db.insert('approvals', {
       id: `app_${uuidv4().substring(0, 8)}`,
       procurementId,
       approverId,
@@ -317,9 +324,9 @@ class ProcurementAgent {
       comments
     });
 
-    db.update('procurementRequests', procurementId, { state: 'APPROVED' });
+    await db.update('procurementRequests', procurementId, { state: 'APPROVED' });
 
-    auditService.logEvent({
+    await auditService.logEvent({
       procurementId,
       correlationId: request.correlationId,
       action: 'APPROVAL_GRANTED',
@@ -334,21 +341,21 @@ class ProcurementAgent {
   }
 
   /**
-   * Order Execution Step: ORDERING -> ORDER_CONFIRMED -> TRACKING
+   * Order Execution Step: ORDERING -> ORDER_CONFIRMED -> TRACKING in MongoDB
    */
   async executeOrder(procurementId) {
-    let request = db.findById('procurementRequests', procurementId);
+    let request = await db.findById('procurementRequests', procurementId);
     if (request.state !== 'APPROVED') {
       throw new Error(`Cannot place order for procurement in state ${request.state}`);
     }
 
     const correlationId = request.correlationId;
-    const selectedOffer = db.findById('offers', request.selectedOfferId);
+    const selectedOffer = await db.findById('offers', request.selectedOfferId);
 
     // STATE: ORDERING
-    request = db.update('procurementRequests', procurementId, { state: 'ORDERING' });
+    request = await db.update('procurementRequests', procurementId, { state: 'ORDERING' });
 
-    auditService.logEvent({
+    await auditService.logEvent({
       procurementId,
       correlationId,
       action: 'ORDER_INITIATED',
@@ -362,8 +369,8 @@ class ProcurementAgent {
     await becknProvider.init(selectedOffer, { orgName: 'Acme Enterprise', location: request.location }, correlationId);
     const confirmResult = await becknProvider.confirm(selectedOffer, correlationId);
 
-    // Save Order Entity
-    const orderRecord = db.insert('orders', {
+    // Save Order Entity in MongoDB
+    const orderRecord = await db.insert('orders', {
       id: `ord_${uuidv4().substring(0, 8)}`,
       procurementId,
       becknOrderId: confirmResult.becknOrderId,
@@ -379,13 +386,13 @@ class ProcurementAgent {
     });
 
     // STATE: ORDER_CONFIRMED -> TRACKING
-    request = db.update('procurementRequests', procurementId, {
+    request = await db.update('procurementRequests', procurementId, {
       state: 'TRACKING',
       orderId: orderRecord.id,
       becknOrderId: confirmResult.becknOrderId
     });
 
-    auditService.logEvent({
+    await auditService.logEvent({
       procurementId,
       correlationId,
       action: 'ORDER_CONFIRMED',
@@ -394,11 +401,11 @@ class ProcurementAgent {
       metadata: { becknOrderId: confirmResult.becknOrderId, trackingUrl: orderRecord.trackingUrl }
     });
 
-    // Record agent memory learning
-    memoryService.recordProcurementPattern(request, selectedOffer);
+    // Record agent memory learning into MongoDB
+    await memoryService.recordProcurementPattern(request, selectedOffer);
 
     return {
-      request: db.findById('procurementRequests', procurementId),
+      request: await db.findById('procurementRequests', procurementId),
       order: orderRecord,
       offer: selectedOffer
     };

@@ -16,7 +16,6 @@ router.post('/procurements', async (req, res) => {
     if (!prompt) {
       return res.status(400).json({ error: 'natural language prompt is required' });
     }
-
     const result = await procurementAgent.startProcurement(prompt, userId, orgId);
     return res.status(201).json(result);
   } catch (err) {
@@ -27,11 +26,11 @@ router.post('/procurements', async (req, res) => {
 
 /**
  * GET /api/procurements
- * List all active/past procurement requests
+ * List all procurement requests from MongoDB
  */
-router.get('/procurements', (req, res) => {
+router.get('/procurements', async (req, res) => {
   try {
-    const requests = db.find('procurementRequests', () => true);
+    const requests = await db.find('procurementRequests', {});
     const sorted = requests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return res.json(sorted);
   } catch (err) {
@@ -41,32 +40,24 @@ router.get('/procurements', (req, res) => {
 
 /**
  * GET /api/procurements/:id
- * Get full composite detail for a procurement request
+ * Get full composite detail for a procurement request from MongoDB
  */
-router.get('/procurements/:id', (req, res) => {
+router.get('/procurements/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    const request = db.findById('procurementRequests', id);
+    const request = await db.findById('procurementRequests', id);
     if (!request) {
       return res.status(404).json({ error: 'Procurement request not found' });
     }
 
-    const offers = db.find('offers', o => o.procurementId === id);
-    const negotiations = db.find('negotiations', n => n.procurementId === id);
-    const approvals = db.find('approvals', a => a.procurementId === id);
-    const order = db.findOne('orders', o => o.procurementId === id);
-    const auditTrail = auditService.getProcurementAuditTrail(id);
-    const memoryPattern = memoryService.getCategoryPattern(request.intent?.category);
+    const offers = await db.find('offers', { procurementId: id });
+    const negotiations = await db.find('negotiations', { procurementId: id });
+    const approvals = await db.find('approvals', { procurementId: id });
+    const order = await db.findOne('orders', { procurementId: id });
+    const auditTrail = await auditService.getProcurementAuditTrail(id);
+    const memoryPattern = await memoryService.getCategoryPattern(request.intent?.category);
 
-    return res.json({
-      request,
-      offers,
-      negotiations,
-      approvals,
-      order,
-      auditTrail,
-      memoryPattern
-    });
+    return res.json({ request, offers, negotiations, approvals, order, auditTrail, memoryPattern });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -103,7 +94,6 @@ router.post('/procurements/:id/approve', async (req, res) => {
   try {
     const id = req.params.id;
     const { approverId = 'user_procurement_lead', comments } = req.body;
-
     const result = await procurementAgent.grantHumanApproval(id, approverId, comments);
     return res.json({ message: 'Procurement approved successfully', ...result });
   } catch (err) {
@@ -115,17 +105,17 @@ router.post('/procurements/:id/approve', async (req, res) => {
  * POST /api/procurements/:id/reject
  * Reject a procurement request
  */
-router.post('/procurements/:id/reject', (req, res) => {
+router.post('/procurements/:id/reject', async (req, res) => {
   try {
     const id = req.params.id;
     const { actorId = 'user_procurement_lead', reason = 'Rejected by manager' } = req.body;
 
-    const request = db.findById('procurementRequests', id);
+    const request = await db.findById('procurementRequests', id);
     if (!request) return res.status(404).json({ error: 'Request not found' });
 
-    db.update('procurementRequests', id, { state: 'CANCELLED', rejectionReason: reason });
+    await db.update('procurementRequests', id, { state: 'CANCELLED', rejectionReason: reason });
     
-    auditService.logEvent({
+    await auditService.logEvent({
       procurementId: id,
       correlationId: request.correlationId,
       action: 'APPROVAL_REJECTED',
@@ -148,14 +138,11 @@ router.post('/procurements/:id/reject', (req, res) => {
 router.get('/orders/:id/status', async (req, res) => {
   try {
     const orderId = req.params.id;
-    const order = db.findById('orders', orderId);
+    const order = await db.findById('orders', orderId);
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
     const statusResult = await becknProvider.status(order.becknOrderId, order.procurementId);
-    return res.json({
-      order,
-      becknTracking: statusResult
-    });
+    return res.json({ order, becknTracking: statusResult });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -163,12 +150,38 @@ router.get('/orders/:id/status', async (req, res) => {
 
 /**
  * GET /api/memory
- * Learned procurement pattern statistics
+ * Learned procurement pattern statistics from MongoDB
  */
-router.get('/memory', (req, res) => {
+router.get('/memory', async (req, res) => {
   try {
-    const patterns = db.find('memoryPatterns', () => true);
+    const patterns = await db.find('memoryPatterns', {});
     return res.json(patterns);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * GET /api/audit
+ * All audit events from MongoDB
+ */
+router.get('/audit', async (req, res) => {
+  try {
+    const events = await auditService.getAllAuditEvents(200);
+    return res.json(events);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * GET /api/users
+ * List users from MongoDB
+ */
+router.get('/users', async (req, res) => {
+  try {
+    const users = await db.find('users', {});
+    return res.json(users);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
