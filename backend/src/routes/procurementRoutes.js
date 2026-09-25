@@ -73,6 +73,29 @@ router.get('/procurements/:id', (req, res) => {
 });
 
 /**
+ * GET /api/procurements/:id/audit
+ * Fetch the immutable audit trail for a procurement request
+ */
+router.get('/procurements/:id/audit', (req, res) => {
+  try {
+    const id = req.params.id;
+    const request = db.findById('procurementRequests', id);
+    if (!request) {
+      return res.status(404).json({ error: 'Procurement request not found' });
+    }
+
+    const auditTrail = auditService.getProcurementAuditTrail(id);
+    return res.json({
+      procurementId: id,
+      correlationId: request.correlationId,
+      auditTrail
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
  * POST /api/procurements/:id/approve
  * Human-in-the-loop approval endpoint
  */

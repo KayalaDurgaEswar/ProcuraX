@@ -40,8 +40,30 @@ class ApprovalEngine {
    * Validates if a specific user role has permission to grant approval
    */
   canUserApprove(userRole, userLimitPaise, orderAmountPaise) {
-    if (userRole === 'Chief Financial Officer' || userRole === 'CFO' || userRole === 'Admin') {
+    const normalizedRole = String(userRole || '').toLowerCase();
+    const cfoRoles = ['chief financial officer', 'cfo', 'admin', 'finance lead'];
+
+    if (cfoRoles.includes(normalizedRole)) {
       return { allowed: true, reason: 'Supervisory override granted by CFO/Admin' };
+    }
+
+    const isManagerRole = normalizedRole.includes('manager') || normalizedRole.includes('procurement');
+    if (isManagerRole) {
+      if (orderAmountPaise > this.managerApprovalLimitPaise) {
+        return {
+          allowed: false,
+          reason: `Manager approval is limited to orders up to ₹${(this.managerApprovalLimitPaise / 100).toLocaleString('en-IN')}. CFO/Board approval is required for ₹${(orderAmountPaise / 100).toLocaleString('en-IN')}.`
+        };
+      }
+
+      if (userLimitPaise >= orderAmountPaise) {
+        return { allowed: true, reason: `Manager limit (₹${(userLimitPaise / 100).toLocaleString('en-IN')}) meets order amount` };
+      }
+
+      return {
+        allowed: false,
+        reason: `Manager limit (₹${(userLimitPaise / 100).toLocaleString('en-IN')}) is insufficient for order amount (₹${(orderAmountPaise / 100).toLocaleString('en-IN')})`
+      };
     }
 
     if (userLimitPaise >= orderAmountPaise) {
