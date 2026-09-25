@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Offer, ProcurementRequest } from '../../models/procurement.model';
+import { Offer } from '../../models/procurement.model';
 
 @Component({
   selector: 'app-offers-matrix',
@@ -10,7 +10,7 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
     <div class="glass-card offers-card">
       <div class="card-header-flex">
         <h3>⚖️ Discovered Seller Offers (Beckn Network)</h3>
-        <span class="offer-count-pill">{{ offers.length }} Offers</span>
+        <span class="offer-count-pill">{{ offers.length }} Discovered</span>
       </div>
 
       <div class="offers-container">
@@ -19,7 +19,11 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
           class="offer-card"
           [class.top-offer]="o.id === selectedOfferId"
         >
-          <span *ngIf="o.id === selectedOfferId" class="top-badge">👑 AI TOP MATCH</span>
+          <div class="badge-row">
+            <span *ngIf="o.id === selectedOfferId" class="top-badge">👑 AI TOP MATCH</span>
+            <span *ngIf="o.memoryInsights?.historicalVendor" class="memory-badge">🏛️ Historical Preferred Vendor</span>
+            <span *ngIf="o.negotiated" class="negotiated-badge">🤝 Negotiated (Saved ₹{{ ((o.savingsPaise || 0) / 100) | number:'1.0-0' }})</span>
+          </div>
 
           <div class="offer-header">
             <div>
@@ -74,9 +78,15 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
           <div class="explanation-text" *ngIf="o.explanation">
             {{ o.explanation }}
           </div>
+
+          <div class="memory-insight-note" *ngIf="o.memoryInsights?.memoryNote">
+            💡 {{ o.memoryInsights?.memoryNote }}
+          </div>
         </div>
 
-        <p *ngIf="offers.length === 0" class="text-muted">No seller offers discovered yet.</p>
+        <div *ngIf="offers.length === 0" class="empty-offers">
+          <p class="text-muted">No seller catalog offers discovered yet on Beckn network.</p>
+        </div>
       </div>
     </div>
   `,
@@ -93,22 +103,27 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
       transition: all 0.2s;
     }
     .offer-card.top-offer { border-color: var(--accent-emerald); background: rgba(16, 185, 129, 0.05); }
-    .top-badge { position: absolute; top: 12px; right: 12px; background: var(--accent-emerald); color: white; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .top-badge { background: var(--accent-emerald); color: #000000; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-pill); }
+    .memory-badge { background: var(--accent-purple-subtle); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.3); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: var(--radius-pill); }
+    .negotiated-badge { background: var(--accent-cyan-subtle); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.3); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: var(--radius-pill); }
     .offer-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-    .offer-seller { font-size: 15px; font-weight: 700; }
+    .offer-seller { font-size: 15px; font-weight: 700; color: var(--text-main); }
     .offer-title { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
     .offer-score-badge { font-size: 18px; font-weight: 800; color: var(--accent-cyan); }
-    .offer-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; padding: 10px; background: rgba(0, 0, 0, 0.2); border-radius: var(--radius-sm); }
+    .offer-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; padding: 10px; background: rgba(0, 0, 0, 0.25); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
     .metric-item { display: flex; flex-direction: column; }
     .metric-label { font-size: 10px; color: var(--text-dim); }
-    .metric-val { font-size: 13px; font-weight: 600; }
+    .metric-val { font-size: 13px; font-weight: 600; color: var(--text-main); }
     .metric-val.price { color: var(--accent-emerald); }
     .score-bars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
     .bar-group { display: flex; flex-direction: column; gap: 2px; }
     .bar-label { font-size: 9px; color: var(--text-dim); }
-    .bar-track { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+    .bar-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
     .bar-fill { height: 100%; background: var(--accent-blue); }
     .explanation-text { font-size: 11px; color: var(--text-muted); margin-top: 10px; line-height: 1.4; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 8px; }
+    .memory-insight-note { font-size: 11px; color: #a78bfa; margin-top: 6px; }
+    .empty-offers { padding: 12px 0; }
   `]
 })
 export class OffersMatrixComponent {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProcurementService } from './services/procurement.service';
-import { ProcurementDetail } from './models/procurement.model';
+import { ProcurementDetail, BecknContext } from './models/procurement.model';
 
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -58,7 +58,12 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
                   <p class="req-prompt">"{{ detail.request.rawPrompt }}"</p>
                 </div>
                 <div class="req-badge-group">
-                  <span class="state-badge">{{ detail.request.state }}</span>
+                  <span class="state-badge" [ngClass]="{
+                    'badge-cancelled': detail.request.state === 'CANCELLED',
+                    'badge-failed': detail.request.state === 'FAILED',
+                    'badge-pending': detail.request.state === 'PENDING_APPROVAL',
+                    'badge-approved': detail.request.state === 'APPROVED' || detail.request.state === 'TRACKING'
+                  }">{{ detail.request.state }}</span>
                   <div class="correlation-pill">Correlation ID: {{ detail.request.correlationId }}</div>
                 </div>
               </div>
@@ -77,10 +82,44 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
                   [selectedOfferId]="detail.request.selectedOfferId"
                 ></app-offers-matrix>
 
+                <!-- AI Strategic Recommendation & Agent Memory Area -->
                 <div class="glass-card reasoning-card">
-                  <h3>🧠 AI Strategic Recommendation & Risk Analysis</h3>
+                  <div class="card-header-flex">
+                    <h3>🧠 AI Strategic Recommendation & Risk Analysis</h3>
+                  </div>
+
                   <div class="reasoning-box">
-                    <p>{{ detail.request.aiRecommendationReasoning || 'AI agent is compiling scoring matrices...' }}</p>
+                    <p>{{ detail.request.aiRecommendationReasoning || 'AI agent is evaluating discovered offers against constraints...' }}</p>
+                  </div>
+
+                  <!-- Connected Agent Memory Pattern -->
+                  <div *ngIf="detail.memoryPattern" class="memory-pattern-block">
+                    <div class="mem-title-row">
+                      <span class="mem-tag">🏛️ Category Memory: {{ detail.memoryPattern.category | uppercase }}</span>
+                      <span class="mem-procured-count">{{ detail.memoryPattern.successfulProcurementsCount }} Cycle(s) Learned</span>
+                    </div>
+
+                    <div class="mem-stats-row">
+                      <div class="mem-stat-item">
+                        <span class="stat-lbl">Historical Avg Price</span>
+                        <span class="stat-val">₹{{ (detail.memoryPattern.averagePricePerUnitPaise / 100) | number:'1.0-0' }} / unit</span>
+                      </div>
+                      <div class="mem-stat-item">
+                        <span class="stat-lbl">Avg Delivery Window</span>
+                        <span class="stat-val">{{ detail.memoryPattern.avgDeliveryDays }} Days</span>
+                      </div>
+                      <div class="mem-stat-item" *ngIf="detail.memoryPattern.preferredSellers?.length">
+                        <span class="stat-lbl">Trusted Sellers</span>
+                        <span class="stat-val seller-pills">
+                          <span *ngFor="let s of detail.memoryPattern.preferredSellers" class="seller-pill">{{ s }}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="!detail.memoryPattern" class="memory-awaiting-block">
+                    <span class="awaiting-icon">ℹ️</span>
+                    <span>No historical memory baseline recorded yet for category <strong>{{ detail.request.intent?.category || 'general' }}</strong>. This workflow run will establish agent memory upon fulfillment.</span>
                   </div>
                 </div>
               </div>
@@ -121,10 +160,22 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
     .req-header-row h2 { font-size: 22px; margin: 4px 0; }
     .req-prompt { font-size: 13px; color: var(--text-muted); font-style: italic; }
     .req-badge-group { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-    .state-badge { font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; background: var(--accent-blue); color: white; }
+    .state-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.5px;
+      background: var(--accent-blue);
+      color: white;
+    }
+    .state-badge.badge-pending { background: var(--accent-amber); color: #000000; }
+    .state-badge.badge-approved { background: var(--accent-emerald); color: #000000; }
+    .state-badge.badge-cancelled, .state-badge.badge-failed { background: var(--accent-rose); color: white; }
     .correlation-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
     .workspace-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
     .grid-col { display: flex; flex-direction: column; gap: 20px; }
+    .card-header-flex { display: flex; justify-content: space-between; align-items: center; }
     .reasoning-box {
       background: rgba(0, 0, 0, 0.25);
       border-left: 3px solid var(--accent-purple);
@@ -135,6 +186,34 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
       color: #cbd5e1;
       white-space: pre-line;
       margin-top: 10px;
+    }
+    .memory-pattern-block {
+      margin-top: 14px;
+      background: rgba(139, 92, 246, 0.06);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+    .mem-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .mem-tag { font-size: 11px; font-weight: 700; color: #c084fc; text-transform: uppercase; letter-spacing: 0.5px; }
+    .mem-procured-count { font-size: 11px; color: var(--text-muted); }
+    .mem-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .mem-stat-item { display: flex; flex-direction: column; gap: 2px; }
+    .stat-lbl { font-size: 10px; color: var(--text-dim); }
+    .stat-val { font-size: 12px; font-weight: 600; color: var(--text-main); }
+    .seller-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+    .seller-pill { font-size: 10px; background: rgba(255, 255, 255, 0.08); padding: 2px 6px; border-radius: 4px; }
+    .memory-awaiting-block {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px;
     }
   `]
 })
@@ -147,7 +226,7 @@ export class AppComponent implements OnInit {
     this.procurementService.activeDetail$.subscribe(d => this.detail = d);
   }
 
-  get topBecknPayload(): any {
+  get topBecknPayload(): BecknContext | null {
     return this.detail?.offers?.[0]?.becknContext || null;
   }
 }
