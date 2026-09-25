@@ -136,8 +136,8 @@ test('4c. Dedicated procurement audit route returns the full immutable trail', a
     };
 
     const db = require('../src/db/database');
-    db.insert('procurementRequests', proc);
-    auditService.logEvent({
+    await db.insert('procurementRequests', proc);
+    await auditService.logEvent({
       procurementId,
       correlationId: proc.correlationId,
       action: 'AUDIT_ROUTE_VALIDATION',
