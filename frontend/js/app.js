@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>⏳ Agent Running...</span>';
+    submitBtn.innerHTML = '<span>Processing...</span>';
 
     try {
       const res = await fetch('/api/procurements', {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alert(`Error launching agent: ${err.message}`);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = '<span>🚀 Launch Agent Workflow</span>';
+      submitBtn.innerHTML = '<span>Launch Agent Workflow</span>';
     }
   });
 });
@@ -139,7 +139,7 @@ function renderWorkspace(data) {
       const b = o.scoreBreakdown || { priceScore: 80, deliveryScore: 80, ratingScore: 80, complianceScore: 80, specsScore: 80 };
       return `
         <div class="offer-card ${isTop ? 'top-offer' : ''}">
-          ${isTop ? '<span class="top-badge">👑 AI TOP MATCH</span>' : ''}
+          ${isTop ? '<span class="top-badge">AI TOP MATCH</span>' : ''}
           <div class="offer-header">
             <div>
               <div class="offer-seller">${escapeHtml(o.sellerName)}</div>
@@ -150,7 +150,7 @@ function renderWorkspace(data) {
           <div class="offer-metrics">
             <div class="metric-item"><span class="metric-label">Total Price</span><span class="metric-val price">₹${(o.totalPricePaise / 100).toLocaleString('en-IN')}</span></div>
             <div class="metric-item"><span class="metric-label">Delivery Speed</span><span class="metric-val">${o.deliveryDays} Days</span></div>
-            <div class="metric-item"><span class="metric-label">Seller Rating</span><span class="metric-val">⭐ ${o.sellerRating}/5</span></div>
+            <div class="metric-item"><span class="metric-label">Seller Rating</span><span class="metric-val">${o.sellerRating}/5</span></div>
             <div class="metric-item"><span class="metric-label">Compliance</span><span class="metric-val">${o.complianceScore}%</span></div>
           </div>
           <div class="score-bars">
@@ -176,7 +176,7 @@ function renderWorkspace(data) {
   if (request.state === 'PENDING_APPROVAL') {
     approvalCard.innerHTML = `
       <div style="color:var(--accent-amber); font-weight:600; font-size:13px; margin-bottom:8px;">
-        ⚠️ Approval Required: ${escapeHtml(request.approvalRequirement?.level || 'MANAGER_APPROVAL')}
+        Approval Required: ${escapeHtml(request.approvalRequirement?.level || 'MANAGER_APPROVAL')}
       </div>
       <p style="font-size:12px; color:var(--text-muted);">${escapeHtml(request.approvalRequirement?.description || '')}</p>
       <div class="approval-btn-group">
@@ -187,7 +187,7 @@ function renderWorkspace(data) {
   } else if (request.state === 'APPROVED' || request.state === 'ORDERING' || request.state === 'TRACKING') {
     approvalCard.innerHTML = `
       <div style="color:var(--accent-emerald); font-weight:600; font-size:13px;">
-        ✅ Order Approved & Execution Authorized
+        Order Approved & Execution Authorized
       </div>
       <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Action logged in immutable audit register.</p>
     `;
@@ -215,7 +215,7 @@ function renderWorkspace(data) {
       <div style="font-size:13px; font-weight:700; color:var(--accent-emerald); margin-bottom:4px;">Beckn ID: ${order.becknOrderId}</div>
       <div style="font-size:12px; color:var(--text-main);">Seller: ${escapeHtml(order.sellerName)}</div>
       <div style="font-size:12px; color:var(--text-muted);">Fulfillment: ${order.fulfillmentStatus}</div>
-      <div style="font-size:11px; margin-top:8px;"><a href="${order.trackingUrl}" target="_blank" style="color:var(--accent-blue); text-decoration:none;">🔗 Live Tracking Link</a></div>
+      <div style="font-size:11px; margin-top:8px;"><a href="${order.trackingUrl}" target="_blank" style="color:var(--accent-blue); text-decoration:none;">Live Tracking</a></div>
     `;
   } else {
     orderContent.innerHTML = `<p class="text-muted">Order placement pending approval.</p>`;

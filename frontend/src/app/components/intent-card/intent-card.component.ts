@@ -8,7 +8,7 @@ import { ProcurementRequest } from '../../models/procurement.model';
   imports: [CommonModule],
   template: `
     <div class="glass-card intent-card">
-      <h3>🔍 Structured Intent & Requirements</h3>
+      <h3><span class="icon-intent"></span> Structured Intent & Requirements</h3>
       <div class="intent-grid">
         <div class="intent-box">
           <div class="intent-label">Category</div>

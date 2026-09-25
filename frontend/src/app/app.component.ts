@@ -40,7 +40,13 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
         <main class="workspace">
           <!-- Empty State -->
           <div *ngIf="!detail" class="empty-state">
-            <div class="empty-icon">🛒</div>
+            <div class="empty-icon">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 2H9C9.55228 2 10 2.44772 10 3V5H14V3C14 2.44772 14.4477 2 15 2H18C18.5523 2 19 2.44772 19 3V5H21C21.5523 5 22 5.44772 22 6V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 16.5C16 16.5 15.5 18 13 18C10.5 18 10 16.5 10 16.5C10 16.5 9.5 18 7 18C4.5 18 4 16.5 4 16.5V6H16V16.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 21H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
             <h2>No Procurement Request Selected</h2>
             <p>Enter a natural language request on the left or select an existing procurement run from history to inspect the autonomous agent state machine.</p>
           </div>
@@ -78,7 +84,7 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
                 ></app-offers-matrix>
 
                 <div class="glass-card reasoning-card">
-                  <h3>🧠 AI Strategic Recommendation & Risk Analysis</h3>
+                  <h3>AI Strategic Recommendation & Risk Analysis</h3>
                   <div class="reasoning-box">
                     <p>{{ detail.request.aiRecommendationReasoning || 'AI agent is compiling scoring matrices...' }}</p>
                   </div>

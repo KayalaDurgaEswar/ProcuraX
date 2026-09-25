@@ -9,11 +9,11 @@ import { ProcurementService } from '../../services/procurement.service';
   imports: [CommonModule],
   template: `
     <div class="glass-card approval-card">
-      <h3>🛡️ Human Approval Gate</h3>
+      <h3><span class="icon-approval"></span> Human Approval Gate</h3>
 
       <div *ngIf="request?.state === 'PENDING_APPROVAL'" class="approval-body">
         <div class="approval-warning">
-          ⚠️ Approval Required: {{ request?.approvalRequirement?.level || 'MANAGER_APPROVAL' }}
+          <span class="icon-warning"></span> Approval Required: {{ request?.approvalRequirement?.level || 'MANAGER_APPROVAL' }}
         </div>
         <p class="approval-desc">{{ request?.approvalRequirement?.description }}</p>
         <div class="approval-btn-group">
@@ -24,7 +24,7 @@ import { ProcurementService } from '../../services/procurement.service';
 
       <div *ngIf="isApproved" class="approval-body">
         <div class="approval-success">
-          ✅ Order Approved & Execution Authorized
+          <span class="icon-success"></span> Order Approved & Execution Authorized
         </div>
         <p class="approval-desc">Action logged in immutable audit register.</p>
       </div>

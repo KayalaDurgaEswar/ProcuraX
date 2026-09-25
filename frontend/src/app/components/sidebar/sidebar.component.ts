@@ -11,7 +11,7 @@ import { ProcurementRequest } from '../../models/procurement.model';
   template: `
     <aside class="sidebar">
       <div class="glass-card new-request-card">
-        <h3>⚡ New Procurement Request</h3>
+        <h3><span class="icon-new"></span> New Procurement Request</h3>
         <p class="subtitle">Enter natural language specifications & constraints</p>
 
         <form (ngSubmit)="onSubmit()">
@@ -29,15 +29,15 @@ import { ProcurementRequest } from '../../models/procurement.model';
           </div>
 
           <button type="submit" class="btn-primary" [disabled]="loading || !prompt.trim()">
-            <span>{{ loading ? '⏳ Agent Running...' : '🚀 Launch Agent Workflow' }}</span>
+            <span>{{ loading ? 'Processing...' : 'Launch Agent Workflow' }}</span>
           </button>
         </form>
       </div>
 
       <div class="glass-card recent-requests-card">
         <div class="card-header-flex">
-          <h3>📋 Procurement History</h3>
-          <button class="btn-icon" (click)="refresh()" title="Refresh">🔄</button>
+          <h3><span class="icon-history"></span> Procurement History</h3>
+          <button class="btn-icon" (click)="refresh()" title="Refresh">Refresh</button>
         </div>
         <div class="request-list">
           <div

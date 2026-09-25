@@ -8,7 +8,7 @@ import { AuditEvent } from '../../models/procurement.model';
   imports: [CommonModule],
   template: `
     <div class="glass-card audit-card">
-      <h3>📜 Immutable Audit Log</h3>
+      <h3><span class="icon-audit"></span> Immutable Audit Log</h3>
       <div class="audit-timeline">
         <div *ngFor="let item of auditTrail" class="audit-item">
           <div>
