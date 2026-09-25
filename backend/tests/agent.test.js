@@ -105,6 +105,60 @@ test('4. Enterprise Approval Policy Threshold Test', () => {
   assert.equal(reqCfo.requiresHumanApproval, true);
 });
 
+test('4b. Role-based approval enforcement prevents unauthorized sign-off', () => {
+  const managerCheck = approvalEngine.canUserApprove('Procurement Manager', 1000000000, 600000000);
+  const cfoCheck = approvalEngine.canUserApprove('Chief Financial Officer', 1000000000, 600000000);
+
+  assert.equal(managerCheck.allowed, false);
+  assert.match(managerCheck.reason, /CFO|Board|Enterprise/i);
+  assert.equal(cfoCheck.allowed, true);
+});
+
+test('4c. Dedicated procurement audit route returns the full immutable trail', async () => {
+  const app = require('../src/app');
+  const http = require('node:http');
+  const server = app.listen(0);
+
+  const port = await new Promise((resolve) => {
+    server.on('listening', () => resolve(server.address().port));
+  });
+
+  try {
+    const procurementId = 'audit_route_test';
+    const proc = {
+      id: procurementId,
+      correlationId: 'corr_route_test',
+      userId: 'user_procurement_lead',
+      orgId: 'org_acme_corp_001',
+      rawPrompt: 'Audit route validation',
+      state: 'PENDING_APPROVAL',
+      createdAt: new Date().toISOString()
+    };
+
+    const db = require('../src/db/database');
+    db.insert('procurementRequests', proc);
+    auditService.logEvent({
+      procurementId,
+      correlationId: proc.correlationId,
+      action: 'AUDIT_ROUTE_VALIDATION',
+      actor: 'user_procurement_lead',
+      previousState: 'RECEIVED',
+      newState: 'PENDING_APPROVAL',
+      metadata: { test: true }
+    });
+
+    const response = await fetch(`http://127.0.0.1:${port}/api/procurements/${procurementId}/audit`);
+    const body = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(body.procurementId, procurementId);
+    assert.ok(Array.isArray(body.auditTrail));
+    assert.ok(body.auditTrail.some(event => event.action === 'AUDIT_ROUTE_VALIDATION'));
+  } finally {
+    await new Promise((resolve, reject) => server.close(err => err ? reject(err) : resolve()));
+  }
+});
+
 test('5. End-to-End Autonomous Agent Execution Loop', async () => {
   const prompt = 'Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000.';
   const req = await procurementAgent.startProcurement(prompt);
