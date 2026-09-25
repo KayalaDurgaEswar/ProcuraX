@@ -26,6 +26,27 @@ export interface ScoreBreakdown {
   specsScore: number;
 }
 
+export interface MemoryInsights {
+  historicalVendor: boolean;
+  avgCategoryPricePaise: number;
+  memoryNote: string;
+}
+
+export interface BecknContext {
+  domain: string;
+  country: string;
+  city?: string;
+  action: string;
+  core_version: string;
+  bap_id: string;
+  bpp_id?: string;
+  bap_uri?: string;
+  bpp_uri?: string;
+  transaction_id: string;
+  message_id: string;
+  timestamp: string;
+}
+
 export interface Offer {
   id: string;
   procurementId: string;
@@ -44,7 +65,13 @@ export interface Offer {
   score: number;
   scoreBreakdown?: ScoreBreakdown;
   explanation?: string;
-  becknContext?: any;
+  becknContext?: BecknContext;
+  negotiable?: boolean;
+  minNegotiablePricePaise?: number;
+  becknFulfillmentId?: string;
+  memoryInsights?: MemoryInsights;
+  negotiated?: boolean;
+  savingsPaise?: number;
 }
 
 export interface ApprovalRequirement {
@@ -68,22 +95,48 @@ export interface ProcurementRequest {
   location?: string;
   budgetPaise?: number;
   deliveryDeadlineDays?: number;
+  offerCount?: number;
   selectedOfferId?: string;
   aiRecommendationReasoning?: string;
   approvalRequirement?: ApprovalRequirement;
+  orderId?: string;
+  becknOrderId?: string;
+  failureReason?: string;
+  rejectionReason?: string;
+}
+
+export interface CounterOffer {
+  offerId: string;
+  sellerId: string;
+  originalTotalPricePaise: number;
+  counterTotalPricePaise: number;
+  savingsPaise: number;
+  savingsINR: number;
+  proposedUnitPricePaise: number;
+  requestedDiscountPercent: number;
+  policyValidation?: {
+    withinEnterpriseLimit: boolean;
+    aboveVendorFloor: boolean;
+  };
+  message?: string;
+}
+
+export interface SellerNegotiationResponse {
+  accepted: boolean;
+  sellerMessage: string;
+  finalTotalPricePaise: number;
+  finalUnitPricePaise?: number;
+  concededDiscountPercent?: number;
 }
 
 export interface Negotiation {
   id: string;
   procurementId: string;
   offerId: string;
-  counterOffer?: any;
-  response?: {
-    accepted: boolean;
-    sellerMessage: string;
-    finalTotalPricePaise: number;
-  };
+  counterOffer?: CounterOffer;
+  response?: SellerNegotiationResponse;
   status: string;
+  createdAt?: string;
 }
 
 export interface Approval {
@@ -92,17 +145,24 @@ export interface Approval {
   approverId: string;
   status: string;
   comments: string;
+  createdAt?: string;
 }
 
 export interface Order {
   id: string;
   procurementId: string;
   becknOrderId: string;
+  sellerId?: string;
   sellerName: string;
+  totalPricePaise?: number;
   totalPriceINR: number;
+  quantity?: number;
+  status?: string;
   fulfillmentStatus: string;
   trackingUrl: string;
   estimatedDeliveryDate: string;
+  networkContext?: Record<string, unknown>;
+  createdAt?: string;
 }
 
 export interface AuditEvent {
@@ -113,7 +173,22 @@ export interface AuditEvent {
   actor: string;
   previousState?: string;
   newState?: string;
+  entityId?: string;
+  entityType?: string;
+  metadata?: Record<string, unknown>;
   timestamp: string;
+}
+
+export interface MemoryPattern {
+  id: string;
+  category: string;
+  preferredSellers: string[];
+  averagePricePerUnitPaise: number;
+  avgDeliveryDays: number;
+  successfulProcurementsCount: number;
+  lastProcuredAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ProcurementDetail {
@@ -123,5 +198,40 @@ export interface ProcurementDetail {
   approvals: Approval[];
   order?: Order;
   auditTrail: AuditEvent[];
-  memoryPattern?: any;
+  memoryPattern?: MemoryPattern | null;
+}
+
+export interface HealthStatus {
+  status: string;
+  service: string;
+  protocol: string;
+  frontend: string;
+  timestamp: string;
+}
+
+export interface BecknTrackingStatus {
+  correlationId: string;
+  becknOrderId: string;
+  status: string;
+  fulfillmentState: string | null;
+  location: string | null;
+  lastUpdated: string;
+  becknPayload?: Record<string, unknown>;
+}
+
+export interface OrderStatusResponse {
+  order: Order;
+  becknTracking: BecknTrackingStatus;
+}
+
+export interface ApprovalActionResponse {
+  message: string;
+  request: ProcurementRequest;
+  order: Order;
+  offer: Offer;
+}
+
+export interface RejectActionResponse {
+  message: string;
+  state: string;
 }

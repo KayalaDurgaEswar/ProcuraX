@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { ProcurementRequest, ProcurementDetail } from '../models/procurement.model';
+import { BehaviorSubject, Observable, finalize, tap } from 'rxjs';
+import {
+  ProcurementRequest,
+  ProcurementDetail,
+  OrderStatusResponse,
+  MemoryPattern,
+  HealthStatus,
+  ApprovalActionResponse,
+  RejectActionResponse
+} from '../models/procurement.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +39,7 @@ export class ProcurementService {
 
   /**
    * Creates new procurement request from natural language prompt
+   * Uses finalize() to guarantee loading$ is reset to false on both success and failure
    */
   createProcurement(prompt: string): Observable<ProcurementRequest> {
     this.loadingSubject.next(true);
@@ -38,6 +47,8 @@ export class ProcurementService {
       tap((newReq) => {
         this.loadProcurements().subscribe();
         this.loadProcurementDetail(newReq.id).subscribe();
+      }),
+      finalize(() => {
         this.loadingSubject.next(false);
       })
     );
@@ -55,8 +66,8 @@ export class ProcurementService {
   /**
    * Grants human approval
    */
-  approveProcurement(id: string, comments: string = 'Approved via Angular Enterprise Dashboard'): Observable<any> {
-    return this.http.post(`${this.apiUrl}/procurements/${id}/approve`, {
+  approveProcurement(id: string, comments: string = 'Approved via Angular Enterprise Dashboard'): Observable<ApprovalActionResponse> {
+    return this.http.post<ApprovalActionResponse>(`${this.apiUrl}/procurements/${id}/approve`, {
       approverId: 'user_procurement_lead',
       comments
     }).pipe(
@@ -70,8 +81,8 @@ export class ProcurementService {
   /**
    * Rejects procurement request
    */
-  rejectProcurement(id: string, reason: string = 'Rejected by Manager'): Observable<any> {
-    return this.http.post(`${this.apiUrl}/procurements/${id}/reject`, {
+  rejectProcurement(id: string, reason: string = 'Rejected by Manager'): Observable<RejectActionResponse> {
+    return this.http.post<RejectActionResponse>(`${this.apiUrl}/procurements/${id}/reject`, {
       actorId: 'user_procurement_lead',
       reason
     }).pipe(
@@ -80,5 +91,29 @@ export class ProcurementService {
         this.loadProcurements().subscribe();
       })
     );
+  }
+
+  /**
+   * Queries real-time Beckn order tracking and fulfillment status
+   * GET /api/orders/:id/status
+   */
+  getOrderStatus(orderId: string): Observable<OrderStatusResponse> {
+    return this.http.get<OrderStatusResponse>(`${this.apiUrl}/orders/${orderId}/status`);
+  }
+
+  /**
+   * Fetches learned procurement pattern statistics from agent memory
+   * GET /api/memory
+   */
+  getMemoryPatterns(): Observable<MemoryPattern[]> {
+    return this.http.get<MemoryPattern[]>(`${this.apiUrl}/memory`);
+  }
+
+  /**
+   * Queries Beckn agent backend health check
+   * GET /health
+   */
+  getHealth(): Observable<HealthStatus> {
+    return this.http.get<HealthStatus>('/health');
   }
 }
