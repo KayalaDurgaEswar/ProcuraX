@@ -94,7 +94,7 @@ const NegotiationSchema = new Schema({
 // Approval Schema
 const ApprovalSchema = new Schema({
   id: { type: String, required: true, unique: true, index: true },
-  procurementId: { type: String, required: true, index: true },
+  procurementId: { type: String, required: true, unique: true, index: true },
   approverId: { type: String, required: true },
   status: { type: String, required: true },
   comments: { type: String },
@@ -104,7 +104,7 @@ const ApprovalSchema = new Schema({
 // Order Schema
 const OrderSchema = new Schema({
   id: { type: String, required: true, unique: true, index: true },
-  procurementId: { type: String, required: true, index: true },
+  procurementId: { type: String, required: true, unique: true, index: true },
   becknOrderId: { type: String, required: true, unique: true },
   sellerId: { type: String, required: true },
   sellerName: { type: String, required: true },

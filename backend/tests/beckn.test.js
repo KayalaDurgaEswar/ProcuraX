@@ -1,3 +1,7 @@
+process.env.NODE_ENV = 'test';
+process.env.DEFAULT_NETWORK_PROVIDER = 'mock';
+process.env.LLM_PROVIDER = 'mock';
+
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const crypto = require('crypto');
@@ -5,6 +9,11 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = require('../src/app');
 const config = require('../src/config');
+const { privateKey: outboundSigningTestKey } = crypto.generateKeyPairSync('ed25519');
+config.beckn.uniqueKeyId = config.beckn.uniqueKeyId || 'test-signing-key';
+config.beckn.signingPrivateKey = config.beckn.signingPrivateKey || outboundSigningTestKey
+  .export({ format: 'der', type: 'pkcs8' })
+  .toString('base64');
 const callbackStore = require('../src/services/beckn/callbackStore');
 const becknProvider = require('../src/services/beckn/becknProvider');
 const { validateBecknPayload } = require('../src/services/beckn/schemaValidator');
@@ -21,6 +30,24 @@ function response(body, status = 200) {
     async text() {
       return JSON.stringify(body);
     }
+  };
+}
+
+function installOutboundSigningFixture() {
+  const original = {
+    uniqueKeyId: config.beckn.uniqueKeyId,
+    signingPrivateKey: config.beckn.signingPrivateKey
+  };
+  const { privateKey } = crypto.generateKeyPairSync('ed25519');
+
+  config.beckn.uniqueKeyId = 'test-signing-key';
+  config.beckn.signingPrivateKey = privateKey
+    .export({ format: 'der', type: 'pkcs8' })
+    .toString('base64');
+
+  return () => {
+    config.beckn.uniqueKeyId = original.uniqueKeyId;
+    config.beckn.signingPrivateKey = original.signingPrivateKey;
   };
 }
 
@@ -253,6 +280,7 @@ test('public callback endpoint rejects unsigned callbacks for an outstanding ope
 test('real search aggregates multiple BPP callbacks and suppresses duplicate retries', async () => {
   const originalMode = becknProvider.mode;
   const originalFetch = global.fetch;
+  const restoreSigning = installOutboundSigningFixture();
   const correlationId = 'corr_multi_bpp_test';
 
   becknProvider.mode = 'real';
@@ -307,6 +335,7 @@ test('real search aggregates multiple BPP callbacks and suppresses duplicate ret
   } finally {
     becknProvider.mode = originalMode;
     global.fetch = originalFetch;
+    restoreSigning();
     callbackStore.clear();
     becknProvider._clearTransaction(correlationId);
   }
@@ -315,6 +344,7 @@ test('real search aggregates multiple BPP callbacks and suppresses duplicate ret
 test('real provider executes lifecycle, preserves revised quote, and evicts transaction state', async () => {
   const originalMode = becknProvider.mode;
   const originalFetch = global.fetch;
+  const restoreSigning = installOutboundSigningFixture();
   const calls = [];
   const correlationId = 'corr_real_lifecycle';
 
@@ -323,7 +353,7 @@ test('real provider executes lifecycle, preserves revised quote, and evicts tran
 
   global.fetch = async (url, options) => {
     const request = JSON.parse(options.body);
-    calls.push({ url, request });
+    calls.push({ url, request, headers: options.headers });
     const common = {
       ...request.context,
       bpp_id: 'seller.example',
@@ -452,10 +482,74 @@ test('real provider executes lifecycle, preserves revised quote, and evicts tran
       calls.map(call => call.request.context.action),
       ['search', 'select', 'init', 'confirm', 'status']
     );
+    assert.ok(
+      calls.every(call => /^Signature /.test(call.headers.Authorization || '')),
+      'real-mode Beckn requests must carry an ONDC Authorization signature'
+    );
   } finally {
     becknProvider.mode = originalMode;
     global.fetch = originalFetch;
+    restoreSigning();
     callbackStore.clear();
     becknProvider._clearTransaction(correlationId);
+  }
+});
+
+
+test('local sandbox completes the full Beckn lifecycle over HTTP', async () => {
+  const originalMode = becknProvider.mode;
+  const originalGatewayUrl = becknProvider.gatewayUrl;
+  const originalBapUri = config.beckn.bapUri;
+  const correlationId = 'corr_http_sandbox';
+  const server = app.listen(0);
+  await new Promise(resolve => server.once('listening', resolve));
+  const baseUrl = `http://127.0.0.1:${server.address().port}`;
+
+  becknProvider.mode = 'sandbox';
+  becknProvider.gatewayUrl = `${baseUrl}/beckn/gateway`;
+  config.beckn.bapUri = `${baseUrl}/beckn/bap`;
+  callbackStore.clear();
+
+  try {
+    const search = await becknProvider.search({
+      category: 'laptop',
+      quantity: 2,
+      location: '500081'
+    }, correlationId);
+
+    assert.ok(search.offers.length >= 1);
+    const offer = search.offers[0];
+    assert.match(offer.becknBppUri, /\/beckn\/sandbox\/bpp$/);
+
+    const selected = await becknProvider.select(offer, correlationId);
+    assert.equal(selected.status, 'SELECTED');
+
+    const initialized = await becknProvider.init(
+      offer,
+      { orgName: 'ProcuraX Sandbox Buyer', location: 'Hyderabad' },
+      correlationId
+    );
+    assert.equal(initialized.status, 'INITIALIZED');
+
+    const confirmed = await becknProvider.confirm(offer, correlationId);
+    assert.ok(confirmed.becknOrderId);
+    assert.equal(confirmed.order.fulfillmentStatus, 'ORDER_ACKNOWLEDGED');
+
+    const status = await becknProvider.status(
+      confirmed.becknOrderId,
+      correlationId,
+      confirmed.networkContext
+    );
+    assert.equal(status.fulfillmentState, 'IN_TRANSIT');
+    assert.equal(status.location, 'ProcuraX Local Distribution Hub');
+  } finally {
+    becknProvider.mode = originalMode;
+    becknProvider.gatewayUrl = originalGatewayUrl;
+    config.beckn.bapUri = originalBapUri;
+    callbackStore.clear();
+    becknProvider._clearTransaction(correlationId);
+    await new Promise((resolve, reject) =>
+      server.close(err => err ? reject(err) : resolve())
+    );
   }
 });

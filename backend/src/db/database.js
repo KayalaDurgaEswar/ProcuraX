@@ -57,6 +57,10 @@ class Database {
   }
 
   async update(collection, id, updates) {
+    if (collection === 'auditEvents') {
+      throw new Error('Audit events are immutable and cannot be updated');
+    }
+
     const Model = this.getModel(collection);
     if (!Model) return null;
 
@@ -69,7 +73,26 @@ class Database {
     return updated;
   }
 
+  async updateWhere(collection, query, updates) {
+    if (collection === 'auditEvents') {
+      throw new Error('Audit events are immutable and cannot be updated');
+    }
+
+    const Model = this.getModel(collection);
+    if (!Model) return null;
+
+    return await Model.findOneAndUpdate(
+      query,
+      { ...updates, updatedAt: new Date() },
+      { new: true }
+    ).lean();
+  }
+
   async delete(collection, id) {
+    if (collection === 'auditEvents') {
+      throw new Error('Audit events are immutable and cannot be deleted');
+    }
+
     const Model = this.getModel(collection);
     if (!Model) return false;
 

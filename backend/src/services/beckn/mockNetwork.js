@@ -21,7 +21,7 @@ class MockBecknNetwork extends CommerceNetworkProvider {
     const rawOffers = [
       {
         sellerId: 'seller_techsupply_01',
-        sellerName: 'TechSupply Corp (ONDC Registered)',
+        sellerName: 'TechSupply Corp (Local Sandbox)',
         sellerRating: 4.7,
         complianceScore: 100,
         itemTitle: 'Dell Latitude 5440 Enterprise Laptop (16GB, i7-1360P, 512GB SSD)',

@@ -2,6 +2,7 @@ const CommerceNetworkProvider = require('./commerceNetwork');
 const mockBecknNetwork = require('./mockNetwork');
 const callbackStore = require('./callbackStore');
 const { validateBecknPayload } = require('./schemaValidator');
+const { createAuthorizationHeader } = require('./authVerifier');
 const config = require('../../config');
 const { v4: uuidv4 } = require('uuid');
 
@@ -77,10 +78,22 @@ class BecknProvider extends CommerceNetworkProvider {
     const timer = setTimeout(() => controller.abort(), config.beckn.requestTimeoutMs);
 
     try {
+      const body = JSON.stringify(payload);
+      const headers = { 'Content-Type': 'application/json' };
+
+      if (this.mode === 'real') {
+        headers.Authorization = createAuthorizationHeader({
+          rawBody: Buffer.from(body, 'utf8'),
+          subscriberId: config.beckn.bapId,
+          uniqueKeyId: config.beckn.uniqueKeyId,
+          privateKeyBase64: config.beckn.signingPrivateKey
+        });
+      }
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers,
+        body,
         signal: controller.signal
       });
       const text = await response.text();

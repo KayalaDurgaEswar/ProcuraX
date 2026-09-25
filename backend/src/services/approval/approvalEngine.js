@@ -6,9 +6,6 @@ class ApprovalEngine {
     this.managerApprovalLimitPaise = config.approvalPolicy.managerApprovalLimitPaise;
   }
 
-  /**
-   * Determines required approval level for a procurement order
-   */
   evaluateRequiredApproval(totalPricePaise) {
     const amountINR = totalPricePaise / 100;
 
@@ -19,61 +16,73 @@ class ApprovalEngine {
         requiredRole: 'SYSTEM',
         description: `Order amount (₹${amountINR.toLocaleString('en-IN')}) is within automatic approval threshold (₹${(this.autoApprovalLimitPaise / 100).toLocaleString('en-IN')}).`
       };
-    } else if (totalPricePaise <= this.managerApprovalLimitPaise) {
+    }
+
+    if (totalPricePaise <= this.managerApprovalLimitPaise) {
       return {
         level: 'MANAGER_APPROVAL',
         requiresHumanApproval: true,
         requiredRole: 'Procurement Manager',
         description: `Order amount (₹${amountINR.toLocaleString('en-IN')}) requires Procurement Manager approval (Threshold: ₹${(this.autoApprovalLimitPaise / 100).toLocaleString('en-IN')} - ₹${(this.managerApprovalLimitPaise / 100).toLocaleString('en-IN')}).`
       };
-    } else {
-      return {
-        level: 'ENTERPRISE_BOARD_APPROVAL',
-        requiresHumanApproval: true,
-        requiredRole: 'Chief Financial Officer / Procurement Board',
-        description: `High-value order (₹${amountINR.toLocaleString('en-IN')}) requires CFO / Enterprise Procurement Board approval (> ₹${(this.managerApprovalLimitPaise / 100).toLocaleString('en-IN')}).`
-      };
-    }
-  }
-
-  /**
-   * Validates if a specific user role has permission to grant approval
-   */
-  canUserApprove(userRole, userLimitPaise, orderAmountPaise) {
-    const normalizedRole = String(userRole || '').toLowerCase();
-    const cfoRoles = ['chief financial officer', 'cfo', 'admin', 'finance lead'];
-
-    if (cfoRoles.includes(normalizedRole)) {
-      return { allowed: true, reason: 'Supervisory override granted by CFO/Admin' };
-    }
-
-    const isManagerRole = normalizedRole.includes('manager') || normalizedRole.includes('procurement');
-    if (isManagerRole) {
-      if (orderAmountPaise > this.managerApprovalLimitPaise) {
-        return {
-          allowed: false,
-          reason: `Manager approval is limited to orders up to ₹${(this.managerApprovalLimitPaise / 100).toLocaleString('en-IN')}. CFO/Board approval is required for ₹${(orderAmountPaise / 100).toLocaleString('en-IN')}.`
-        };
-      }
-
-      if (userLimitPaise >= orderAmountPaise) {
-        return { allowed: true, reason: `Manager limit (₹${(userLimitPaise / 100).toLocaleString('en-IN')}) meets order amount` };
-      }
-
-      return {
-        allowed: false,
-        reason: `Manager limit (₹${(userLimitPaise / 100).toLocaleString('en-IN')}) is insufficient for order amount (₹${(orderAmountPaise / 100).toLocaleString('en-IN')})`
-      };
-    }
-
-    if (userLimitPaise >= orderAmountPaise) {
-      return { allowed: true, reason: `User limit (₹${(userLimitPaise / 100).toLocaleString('en-IN')}) meets order amount` };
     }
 
     return {
-      allowed: false,
-      reason: `User limit (₹${(userLimitPaise / 100).toLocaleString('en-IN')}) is insufficient for order amount (₹${(orderAmountPaise / 100).toLocaleString('en-IN')})`
+      level: 'ENTERPRISE_BOARD_APPROVAL',
+      requiresHumanApproval: true,
+      requiredRole: 'Chief Financial Officer / Procurement Board',
+      description: `High-value order (₹${amountINR.toLocaleString('en-IN')}) requires CFO / Enterprise Procurement Board approval (> ₹${(this.managerApprovalLimitPaise / 100).toLocaleString('en-IN')}).`
     };
+  }
+
+  canUserApprove(userRole, userLimitPaise, orderAmountPaise) {
+    const normalizedRole = String(userRole || '').trim().toLowerCase();
+    const cfoRoles = new Set([
+      'chief financial officer',
+      'cfo',
+      'admin',
+      'finance lead',
+      'procurement board'
+    ]);
+    const isCfo = cfoRoles.has(normalizedRole);
+    const isManager =
+      normalizedRole === 'procurement manager' ||
+      normalizedRole === 'manager' ||
+      normalizedRole === 'procurement lead';
+
+    if (orderAmountPaise > this.managerApprovalLimitPaise) {
+      return isCfo
+        ? { allowed: true, reason: 'CFO/Board authority satisfies enterprise approval policy' }
+        : {
+            allowed: false,
+            reason: `CFO/Board approval is required for ₹${(orderAmountPaise / 100).toLocaleString('en-IN')}`
+          };
+    }
+
+    if (orderAmountPaise > this.autoApprovalLimitPaise) {
+      if (!isManager && !isCfo) {
+        return {
+          allowed: false,
+          reason: 'Procurement Manager or CFO authority is required for this order'
+        };
+      }
+
+      if (Number(userLimitPaise || 0) < orderAmountPaise) {
+        return {
+          allowed: false,
+          reason: `Approver limit (₹${(Number(userLimitPaise || 0) / 100).toLocaleString('en-IN')}) is insufficient for order amount (₹${(orderAmountPaise / 100).toLocaleString('en-IN')})`
+        };
+      }
+
+      return { allowed: true, reason: 'Approver role and monetary limit satisfy policy' };
+    }
+
+    return Number(userLimitPaise || 0) >= orderAmountPaise
+      ? { allowed: true, reason: 'Approver monetary limit satisfies policy' }
+      : {
+          allowed: false,
+          reason: `Approver limit (₹${(Number(userLimitPaise || 0) / 100).toLocaleString('en-IN')}) is insufficient for order amount (₹${(orderAmountPaise / 100).toLocaleString('en-IN')})`
+        };
   }
 }
 

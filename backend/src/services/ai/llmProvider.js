@@ -80,7 +80,7 @@ Return ONLY JSON without markdown fences.`;
   }
 
   async analyzeOffersOllama(request, offers) {
-    const prompt = `Analyze these seller offers for procurement of ${request.quantity} ${request.item} with budget ₹${request.budgetPaise / 100} and delivery deadline ${request.deliveryDeadlineDays} days:
+    const prompt = `Analyze these seller offers for procurement of ${request.quantity} ${request.intent?.item || request.intent?.category || 'items'} with budget ₹${request.budgetPaise / 100} and delivery deadline ${request.deliveryDeadlineDays} days:
 Offers: ${JSON.stringify(offers, null, 2)}
 
 Provide a concise strategic summary detailing:
@@ -114,15 +114,30 @@ Provide a concise strategic summary detailing:
     const qtyMatch = text.match(/(\d+)\s*(laptops|units|pcs|pieces|items|servers|monitors|phones|macbooks|desktops)/i) || text.match(/procure\s*(\d+)/i) || text.match(/(\d+)/);
     const quantity = qtyMatch ? parseInt(qtyMatch[1], 10) : 10;
 
-    // Budget extraction (e.g. 5,00,000 or 500000 or 5L or 5 lakh)
+    // Budget extraction. Prefer explicit currency/budget phrases so quantity
+    // numbers (for example "50 laptops") are never mistaken for the budget.
     let budgetINR = 500000;
-    if (text.includes('₹') || text.includes('rs') || text.includes('inr') || text.includes('budget')) {
-      const budgetMatch = text.match(/₹?\s*([\d,]+)/) || text.match(/budget[^\d]*([\d,]+)/i);
-      if (budgetMatch) {
-        const num = parseInt(budgetMatch[1].replace(/,/g, ''), 10);
-        if (!isNaN(num) && num > 1000) budgetINR = num;
+    const scaledBudgetMatch = text.match(
+      /(?:budget[^\d]{0,24})?(\d+(?:\.\d+)?)\s*(lakh|lakhs|lac|lacs|crore|crores|cr)\b/i
+    );
+    const numericBudgetMatch =
+      text.match(/₹\s*([\d,]+(?:\.\d+)?)/i) ||
+      text.match(/(?:budget|inr|rs\.?)[^\d]{0,24}([\d,]+(?:\.\d+)?)/i);
+
+    if (scaledBudgetMatch) {
+      const value = Number(scaledBudgetMatch[1]);
+      const unit = scaledBudgetMatch[2].toLowerCase();
+      const multiplier = unit.startsWith('cr') || unit.startsWith('crore')
+        ? 10000000
+        : 100000;
+      if (Number.isFinite(value) && value > 0) {
+        budgetINR = Math.round(value * multiplier);
       }
-      if (text.includes('5,00,000') || text.includes('500000') || text.includes('5 lakh')) budgetINR = 500000;
+    } else if (numericBudgetMatch) {
+      const value = Number(numericBudgetMatch[1].replace(/,/g, ''));
+      if (Number.isFinite(value) && value > 0) {
+        budgetINR = Math.round(value);
+      }
     }
 
     // Delivery days extraction

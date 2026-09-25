@@ -1,11 +1,22 @@
 const app = require('./app');
 const config = require('./config');
 const { connectDB } = require('./db/mongoConfig');
+const becknProvider = require('./services/beckn/becknProvider');
 
 const DEFAULT_PORT = parseInt(config.port, 10) || 3000;
 
+function configureLocalSandboxPort(port) {
+  if (config.beckn.defaultProvider !== 'sandbox') return;
+
+  const baseUrl = `http://127.0.0.1:${port}`;
+  config.beckn.gatewayUrl = `${baseUrl}/beckn/gateway`;
+  config.beckn.bapUri = `${baseUrl}/beckn/bap`;
+  becknProvider.gatewayUrl = config.beckn.gatewayUrl;
+}
+
 function startServer(port) {
   const server = app.listen(port, () => {
+    configureLocalSandboxPort(port);
     console.log(`
 ============================================================
 🤖 BECKN AGENTIC AI PROCUREMENT PLATFORM IS READY

@@ -5,6 +5,7 @@ const procurementAgent = require('../services/agent/procurementAgent');
 const auditService = require('../services/audit/auditService');
 const becknProvider = require('../services/beckn/becknProvider');
 const memoryService = require('../services/memory/memoryService');
+const approvalEngine = require('../services/approval/approvalEngine');
 
 /**
  * POST /api/procurements
@@ -13,11 +14,18 @@ const memoryService = require('../services/memory/memoryService');
 router.post('/procurements', async (req, res) => {
   try {
     const { prompt, userId, orgId } = req.body;
-    if (!prompt) {
+    if (typeof prompt !== 'string' || !prompt.trim()) {
       return res.status(400).json({ error: 'natural language prompt is required' });
     }
-    const result = await procurementAgent.startProcurement(prompt, userId, orgId);
-    return res.status(201).json(result);
+    if (prompt.length > 1200) {
+      return res.status(400).json({ error: 'natural language prompt must be 1200 characters or fewer' });
+    }
+
+    const result = await procurementAgent.startProcurement(prompt.trim(), userId, orgId);
+    // Keep the creation API stable whether the agent pauses for approval
+    // or auto-approves and immediately executes an order.
+    const request = result?.request || result;
+    return res.status(201).json(request);
   } catch (err) {
     console.error('API Error /api/procurements:', err.message);
     return res.status(500).json({ error: err.message });
@@ -108,12 +116,49 @@ router.post('/procurements/:id/approve', async (req, res) => {
 router.post('/procurements/:id/reject', async (req, res) => {
   try {
     const id = req.params.id;
-    const { actorId = 'user_procurement_lead', reason = 'Rejected by manager' } = req.body;
+    const {
+      actorId = 'user_procurement_lead',
+      reason = 'Rejected by authorized approver'
+    } = req.body;
 
     const request = await db.findById('procurementRequests', id);
     if (!request) return res.status(404).json({ error: 'Request not found' });
+    if (request.state !== 'PENDING_APPROVAL') {
+      return res.status(409).json({
+        error: `Only PENDING_APPROVAL procurements can be rejected; current state is ${request.state}`
+      });
+    }
 
-    await db.update('procurementRequests', id, { state: 'CANCELLED', rejectionReason: reason });
+    const actor = await db.findById('users', actorId);
+    if (!actor) {
+      return res.status(403).json({ error: `Rejecting user ${actorId} was not found` });
+    }
+    if (actor.orgId !== request.orgId) {
+      return res.status(403).json({ error: 'Rejecting user does not belong to this organization' });
+    }
+
+    const offer = await db.findById('offers', request.selectedOfferId);
+    if (!offer) {
+      return res.status(409).json({ error: 'Selected offer was not found for rejection policy validation' });
+    }
+
+    const policy = approvalEngine.canUserApprove(
+      actor.role,
+      actor.approvalLimitPaise,
+      offer.totalPricePaise
+    );
+    if (!policy.allowed) {
+      return res.status(403).json({ error: `Rejection denied: ${policy.reason}` });
+    }
+
+    const cancelled = await db.updateWhere(
+      'procurementRequests',
+      { id, state: 'PENDING_APPROVAL' },
+      { state: 'CANCELLED', rejectionReason: reason }
+    );
+    if (!cancelled) {
+      return res.status(409).json({ error: 'Procurement decision was already processed' });
+    }
     
     await auditService.logEvent({
       procurementId: id,

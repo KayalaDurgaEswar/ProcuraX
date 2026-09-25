@@ -12,6 +12,7 @@ node_modules/
 
 # Database Data Files
 data/db.json
+/backend/data/db.json
 
 # Build Outputs
 dist/

@@ -6,13 +6,31 @@ const negotiationEngine = require('../negotiation/negotiationEngine');
 const approvalEngine = require('../approval/approvalEngine');
 const auditService = require('../audit/auditService');
 const memoryService = require('../memory/memoryService');
+const config = require('../../config');
 const { v4: uuidv4 } = require('uuid');
 
 class ProcurementAgent {
   /**
    * Main Entry Point: Creates a new procurement request and executes the autonomous state machine in MongoDB
    */
-  async startProcurement(naturalLanguagePrompt, userId = 'user_procurement_lead', orgId = 'org_acme_corp_001') {
+  async startProcurement(
+    naturalLanguagePrompt,
+    userId = config.security.defaultUserId,
+    orgId = config.security.defaultOrgId
+  ) {
+    const organization = await db.findById('organizations', orgId);
+    if (!organization) {
+      throw new Error(`Organization ${orgId} was not found`);
+    }
+
+    const user = await db.findById('users', userId);
+    if (!user) {
+      throw new Error(`User ${userId} was not found`);
+    }
+    if (user.orgId !== orgId) {
+      throw new Error('User does not belong to the requested organization');
+    }
+
     const procurementId = `proc_${uuidv4().substring(0, 8)}`;
     const correlationId = `corr_${uuidv4().substring(0, 12)}`;
 
@@ -224,12 +242,16 @@ class ProcurementAgent {
             });
           }
 
+          request = await db.update('procurementRequests', procurementId, {
+            state: 'COMPARING'
+          });
+
           await auditService.logEvent({
             procurementId,
             correlationId,
             action: 'NEGOTIATION_COMPLETED',
             previousState: 'NEGOTIATING',
-            newState: 'NEGOTIATION_FINISHED',
+            newState: 'COMPARING',
             metadata: {
               accepted: sellerResponse.accepted,
               savingsINR: (bestOffer.totalPricePaise - sellerResponse.finalTotalPricePaise) / 100
@@ -308,12 +330,35 @@ class ProcurementAgent {
       throw new Error(`Procurement ${procurementId} is not in PENDING_APPROVAL state`);
     }
 
-    const user = (await db.findById('users', approverId)) || { id: approverId, role: 'Procurement Manager', approvalLimitPaise: 50000000 };
-    const offer = await db.findById('offers', request.selectedOfferId);
+    const user = await db.findById('users', approverId);
+    if (!user) {
+      throw new Error(`Approver ${approverId} was not found`);
+    }
+    if (user.orgId !== request.orgId) {
+      throw new Error('Approver does not belong to the procurement organization');
+    }
 
-    const validation = approvalEngine.canUserApprove(user.role, user.approvalLimitPaise, offer.totalPricePaise);
+    const offer = await db.findById('offers', request.selectedOfferId);
+    if (!offer) {
+      throw new Error('Selected offer was not found for approval');
+    }
+
+    const validation = approvalEngine.canUserApprove(
+      user.role,
+      user.approvalLimitPaise,
+      offer.totalPricePaise
+    );
     if (!validation.allowed) {
       throw new Error(`Approval rejected: ${validation.reason}`);
+    }
+
+    const transitionedRequest = await db.updateWhere(
+      'procurementRequests',
+      { id: procurementId, state: 'PENDING_APPROVAL' },
+      { state: 'APPROVED' }
+    );
+    if (!transitionedRequest) {
+      throw new Error(`Procurement ${procurementId} approval was already processed`);
     }
 
     await db.insert('approvals', {
@@ -323,8 +368,6 @@ class ProcurementAgent {
       status: 'APPROVED',
       comments
     });
-
-    await db.update('procurementRequests', procurementId, { state: 'APPROVED' });
 
     await auditService.logEvent({
       procurementId,
@@ -351,6 +394,9 @@ class ProcurementAgent {
 
     const correlationId = request.correlationId;
     const selectedOffer = await db.findById('offers', request.selectedOfferId);
+    if (!selectedOffer) {
+      throw new Error('Selected offer was not found before order execution');
+    }
 
     // STATE: ORDERING
     request = await db.update('procurementRequests', procurementId, { state: 'ORDERING' });
@@ -364,9 +410,18 @@ class ProcurementAgent {
       metadata: { sellerId: selectedOffer.sellerId, totalAmountINR: selectedOffer.totalPricePaise / 100 }
     });
 
+    const organization = await db.findById('organizations', request.orgId);
+
     // Beckn Protocol /select, /init, /confirm sequence
     await becknProvider.select(selectedOffer, correlationId);
-    await becknProvider.init(selectedOffer, { orgName: 'Acme Enterprise', location: request.location }, correlationId);
+    await becknProvider.init(
+      selectedOffer,
+      {
+        orgName: organization?.name || request.orgId,
+        location: request.location
+      },
+      correlationId
+    );
     const confirmResult = await becknProvider.confirm(selectedOffer, correlationId);
 
     // Persist the final network quote when the BPP revises pricing during init/confirm.
@@ -406,8 +461,12 @@ class ProcurementAgent {
       metadata: { becknOrderId: confirmResult.becknOrderId, trackingUrl: orderRecord.trackingUrl }
     });
 
-    // Record agent memory learning into MongoDB
-    await memoryService.recordProcurementPattern(request, selectedOffer);
+    // Record the actual confirmed price, not a stale pre-confirm quote.
+    await memoryService.recordProcurementPattern(request, {
+      ...selectedOffer,
+      totalPricePaise: finalTotalPricePaise,
+      unitPricePaise: Math.round(finalTotalPricePaise / request.quantity)
+    });
 
     return {
       request: await db.findById('procurementRequests', procurementId),

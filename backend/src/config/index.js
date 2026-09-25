@@ -17,10 +17,13 @@ module.exports = {
   },
   
   beckn: {
-    defaultProvider: process.env.DEFAULT_NETWORK_PROVIDER || 'real',
-    gatewayUrl: process.env.BECKN_GATEWAY_URL || 'https://gateway.beckn.io/protocol/v1',
+    // Live Beckn/ONDC access is explicit opt-in. Local/dev/test runs stay deterministic.
+    defaultProvider: process.env.DEFAULT_NETWORK_PROVIDER || 'mock',
+    gatewayUrl: process.env.BECKN_GATEWAY_URL || 'http://localhost:3000/beckn/gateway',
     bapId: process.env.BECKN_BAP_ID || 'procure-ai-bap.domain.org',
-    bapUri: process.env.BECKN_BAP_URI || 'https://api.yourdomain.com/beckn/bap',
+    bapUri: process.env.BECKN_BAP_URI || 'http://localhost:3000/beckn/bap',
+    uniqueKeyId: process.env.ONDC_UNIQUE_KEY_ID || '',
+    signingPrivateKey: process.env.ONDC_SIGNING_PRIVATE_KEY || '',
     domain: process.env.BECKN_DOMAIN || 'nic2004:52110',
     country: process.env.BECKN_COUNTRY || 'IND',
     city: process.env.BECKN_CITY || 'std:040',
@@ -56,7 +59,6 @@ module.exports = {
   },
 
   security: {
-    apiKey: process.env.API_KEY || 'procure_ai_secret_key_2026',
     defaultOrgId: process.env.DEFAULT_ORG_ID || 'org_acme_corp_001',
     defaultUserId: process.env.DEFAULT_USER_ID || 'user_procurement_lead'
   }
