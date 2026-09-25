@@ -25,6 +25,9 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
             <div>
               <div class="offer-seller">{{ o.sellerName }}</div>
               <div class="offer-title">{{ o.itemTitle }}</div>
+              <div *ngIf="o.becknContext?.bpp_id" class="network-id">
+                BPP {{ o.becknContext.bpp_id }}
+              </div>
             </div>
             <div class="offer-score-badge">{{ o.score }}/100</div>
           </div>
@@ -40,7 +43,7 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
             </div>
             <div class="metric-item">
               <span class="metric-label">Seller Rating</span>
-              <span class="metric-val">⭐ {{ o.sellerRating }}/5</span>
+              <span class="metric-val">{{ o.sellerRating }}/5</span>
             </div>
             <div class="metric-item">
               <span class="metric-label">Compliance</span>
@@ -97,6 +100,21 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
     .offer-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
     .offer-seller { font-size: 15px; font-weight: 700; }
     .offer-title { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .network-id {
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 7px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(56, 189, 248, 0.07);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      color: var(--accent-cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .offer-score-badge { font-size: 18px; font-weight: 800; color: var(--accent-cyan); }
     .offer-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; padding: 10px; background: rgba(0, 0, 0, 0.2); border-radius: var(--radius-sm); }
     .metric-item { display: flex; flex-direction: column; }
@@ -109,6 +127,24 @@ import { Offer, ProcurementRequest } from '../../models/procurement.model';
     .bar-track { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
     .bar-fill { height: 100%; background: var(--accent-blue); }
     .explanation-text { font-size: 11px; color: var(--text-muted); margin-top: 10px; line-height: 1.4; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 8px; }
+
+    @media (max-width: 720px) {
+      .offer-header {
+        gap: 12px;
+      }
+
+      .offer-score-badge {
+        font-size: 15px;
+      }
+
+      .offer-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .score-bars {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
   `]
 })
 export class OffersMatrixComponent {

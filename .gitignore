@@ -17,6 +17,7 @@ data/db.json
 dist/
 tmp/
 out-tsc/
+.angular/
 *.tsbuildinfo
 
 # OS Files

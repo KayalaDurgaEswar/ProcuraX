@@ -110,6 +110,46 @@ import { CommonModule } from '@angular/common';
     .user-info { display: flex; flex-direction: column; }
     .user-name { font-size: 13px; font-weight: 600; color: #ffffff; }
     .user-role { font-size: 11px; color: var(--text-muted); }
+
+    @media (max-width: 860px) {
+      .app-header {
+        padding: 14px 16px;
+        gap: 12px;
+      }
+
+      .brand-text p {
+        display: none;
+      }
+
+      .header-controls {
+        gap: 10px;
+      }
+
+      .status-indicator {
+        padding: 6px 10px;
+      }
+
+      .user-info {
+        display: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .app-header {
+        align-items: flex-start;
+      }
+
+      .brand-text h1 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        font-size: 18px;
+      }
+
+      .header-controls {
+        display: none;
+      }
+    }
   `]
 })
 export class HeaderComponent {}
