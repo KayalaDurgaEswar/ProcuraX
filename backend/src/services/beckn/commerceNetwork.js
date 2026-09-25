@@ -22,7 +22,8 @@ class CommerceNetworkProvider {
     throw new Error('confirm() method must be implemented by subclass');
   }
 
-  async status(orderId, correlationId) {
+  async status(orderId, correlationId, networkContext = null) {
+    void networkContext;
     throw new Error('status() method must be implemented by subclass');
   }
 }

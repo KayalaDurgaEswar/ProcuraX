@@ -1,11 +1,21 @@
-const test = require('node:test');
+const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
+const { connectDB, disconnectDB } = require('../src/db/mongoConfig');
 const llmProvider = require('../src/services/ai/llmProvider');
 const comparisonEngine = require('../src/services/comparison/comparisonEngine');
 const negotiationEngine = require('../src/services/negotiation/negotiationEngine');
 const approvalEngine = require('../src/services/approval/approvalEngine');
 const auditService = require('../src/services/audit/auditService');
 const procurementAgent = require('../src/services/agent/procurementAgent');
+
+before(async () => {
+  process.env.NODE_ENV = 'test';
+  await connectDB();
+});
+
+after(async () => {
+  await disconnectDB();
+});
 
 test('1. Natural Language Intent Extraction Test', async () => {
   const prompt = 'Procure 50 laptops with at least 16GB RAM, i7 processor, delivery to Hyderabad within 7 days, budget below ₹5,00,000.';
@@ -126,8 +136,8 @@ test('4c. Dedicated procurement audit route returns the full immutable trail', a
     };
 
     const db = require('../src/db/database');
-    db.insert('procurementRequests', proc);
-    auditService.logEvent({
+    await db.insert('procurementRequests', proc);
+    await auditService.logEvent({
       procurementId,
       correlationId: proc.correlationId,
       action: 'AUDIT_ROUTE_VALIDATION',

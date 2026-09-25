@@ -369,6 +369,10 @@ class ProcurementAgent {
     await becknProvider.init(selectedOffer, { orgName: 'Acme Enterprise', location: request.location }, correlationId);
     const confirmResult = await becknProvider.confirm(selectedOffer, correlationId);
 
+    // Persist the final network quote when the BPP revises pricing during init/confirm.
+    const finalTotalPricePaise =
+      confirmResult.order.finalTotalPricePaise || selectedOffer.totalPricePaise;
+
     // Save Order Entity in MongoDB
     const orderRecord = await db.insert('orders', {
       id: `ord_${uuidv4().substring(0, 8)}`,
@@ -376,13 +380,14 @@ class ProcurementAgent {
       becknOrderId: confirmResult.becknOrderId,
       sellerId: selectedOffer.sellerId,
       sellerName: selectedOffer.sellerName,
-      totalPricePaise: selectedOffer.totalPricePaise,
-      totalPriceINR: selectedOffer.totalPricePaise / 100,
+      totalPricePaise: finalTotalPricePaise,
+      totalPriceINR: finalTotalPricePaise / 100,
       quantity: request.quantity,
       status: 'CONFIRMED',
       fulfillmentStatus: confirmResult.order.fulfillmentStatus,
       trackingUrl: confirmResult.order.trackingUrl,
-      estimatedDeliveryDate: confirmResult.order.estimatedDeliveryDate
+      estimatedDeliveryDate: confirmResult.order.estimatedDeliveryDate,
+      networkContext: confirmResult.networkContext || null
     });
 
     // STATE: ORDER_CONFIRMED -> TRACKING

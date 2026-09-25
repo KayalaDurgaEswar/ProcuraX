@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "test": "node --test tests/agent.test.js"
+    "test": "node --test tests/agent.test.js tests/beckn.test.js"
   },
   "keywords": [
     "beckn",

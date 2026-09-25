@@ -66,6 +66,10 @@ const OfferSchema = new Schema({
   negotiable: { type: Boolean, default: true },
   minNegotiablePricePaise: { type: Number },
   becknFulfillmentId: { type: String },
+  becknItemId: { type: String },
+  becknProviderId: { type: String },
+  becknBppId: { type: String },
+  becknBppUri: { type: String },
   becknContext: { type: Schema.Types.Mixed },
   score: { type: Number, default: 0 },
   scoreBreakdown: { type: Schema.Types.Mixed },
@@ -111,6 +115,7 @@ const OrderSchema = new Schema({
   fulfillmentStatus: { type: String, required: true },
   trackingUrl: { type: String },
   estimatedDeliveryDate: { type: Date },
+  networkContext: { type: Schema.Types.Mixed },
   createdAt: { type: Date, default: Date.now }
 });
 
