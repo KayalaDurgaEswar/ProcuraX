@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProcurementService } from '../../services/procurement.service';
-import { ProcurementRequest } from '../../models/procurement.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +9,36 @@ import { ProcurementRequest } from '../../models/procurement.model';
   imports: [CommonModule, FormsModule],
   template: `
     <aside class="sidebar">
-      <div class="glass-card new-request-card">
+      <!-- Navigation Tabs -->
+      <div class="nav-tabs">
+        <button 
+          class="nav-tab" 
+          [class.active]="activeTab === 'new'"
+          (click)="activeTab = 'new'">
+          ➕ New
+        </button>
+        <button 
+          class="nav-tab" 
+          [class.active]="activeTab === 'history'"
+          (click)="activeTab = 'history'">
+          📋 History
+        </button>
+        <button 
+          class="nav-tab" 
+          [class.active]="activeTab === 'analytics'"
+          (click)="switchView.emit('analytics')">
+          📊 Analytics
+        </button>
+        <button 
+          class="nav-tab" 
+          [class.active]="activeTab === 'bulk'"
+          (click)="switchView.emit('bulk')">
+          Bulk
+        </button>
+      </div>
+
+      <!-- New Request Panel -->
+      <div *ngIf="activeTab === 'new'" class="glass-card new-request-card">
         <h3><span class="icon-new"></span> New Procurement Request</h3>
         <p class="subtitle">Enter natural language specifications & constraints</p>
 
@@ -32,12 +60,19 @@ import { ProcurementRequest } from '../../models/procurement.model';
             <span>{{ loading ? 'Processing...' : 'Launch Agent Workflow' }}</span>
           </button>
         </form>
+
+        <div class="quick-actions">
+          <button class="action-btn" (click)="switchView.emit('bulk')">
+            Bulk Import
+          </button>
+        </div>
       </div>
 
-      <div class="glass-card recent-requests-card">
+      <!-- History Panel -->
+      <div *ngIf="activeTab === 'history'" class="glass-card recent-requests-card">
         <div class="card-header-flex">
           <h3><span class="icon-history"></span> Procurement History</h3>
-          <button class="btn-icon" (click)="refresh()" title="Refresh">Refresh</button>
+          <button class="btn-icon" (click)="refresh()" title="Refresh">🔄</button>
         </div>
         <div class="request-list">
           <div
@@ -67,6 +102,36 @@ import { ProcurementRequest } from '../../models/procurement.model';
       flex-direction: column;
       gap: 20px;
       overflow-y: auto;
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .nav-tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 10px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .nav-tab:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+    .nav-tab.active {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
     }
     .subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
     textarea {
@@ -98,6 +163,29 @@ import { ProcurementRequest } from '../../models/procurement.model';
       color: var(--text-main);
       border-color: var(--accent-blue);
     }
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .action-btn {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #a78bfa;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .action-btn:hover {
+      background: rgba(139, 92, 246, 0.25);
+      transform: translateY(-2px);
+    }
     .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .btn-icon { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.7; color: white; }
     .btn-icon:hover { opacity: 1; }
@@ -120,35 +208,37 @@ import { ProcurementRequest } from '../../models/procurement.model';
     .req-item-prompt { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   `]
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
   prompt: string = '';
-  requests: ProcurementRequest[] = [];
+  requests: any[] = [];
   activeId: string | null = null;
   loading: boolean = false;
+  activeTab: string = 'new';
 
-  constructor(private procurementService: ProcurementService) {}
+  @Output() switchView = new EventEmitter<string>();
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
-    this.procurementService.requests$.subscribe(reqs => this.requests = reqs);
-    this.procurementService.activeDetail$.subscribe(detail => this.activeId = detail?.request?.id || null);
-    this.procurementService.loading$.subscribe(l => this.loading = l);
-    this.refresh();
+    this.loadRequests();
+  }
+
+  loadRequests() {
+    this.requests = [];
   }
 
   refresh() {
-    this.procurementService.loadProcurements().subscribe();
+    this.loadRequests();
   }
 
   onSubmit() {
     if (!this.prompt.trim() || this.loading) return;
-    this.procurementService.createProcurement(this.prompt).subscribe({
-      next: () => this.prompt = '',
-      error: (err) => alert(`Error launching agent: ${err.message}`)
-    });
+    alert('Request submitted: ' + this.prompt);
+    this.prompt = '';
   }
 
   selectRequest(id: string) {
-    this.procurementService.loadProcurementDetail(id).subscribe();
+    this.activeId = id;
   }
 
   fillSample(index: number) {

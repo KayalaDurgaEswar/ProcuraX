@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
 import { ProcurementService } from './services/procurement.service';
 import { ProcurementDetail } from './models/procurement.model';
 
@@ -13,12 +14,15 @@ import { NegotiationCardComponent } from './components/negotiation-card/negotiat
 import { OrderCardComponent } from './components/order-card/order-card.component';
 import { AuditTimelineComponent } from './components/audit-timeline/audit-timeline.component';
 import { PayloadInspectorComponent } from './components/payload-inspector/payload-inspector.component';
+import { AnalyticsDashboardComponent } from './components/analytics-dashboard/analytics-dashboard.component';
+import { BulkImportComponent } from './components/bulk-import/bulk-import.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule,
+    RouterOutlet,
     HeaderComponent,
     SidebarComponent,
     StepperComponent,
@@ -28,76 +32,106 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
     NegotiationCardComponent,
     OrderCardComponent,
     AuditTimelineComponent,
-    PayloadInspectorComponent
+    PayloadInspectorComponent,
+    AnalyticsDashboardComponent,
+    BulkImportComponent
   ],
   template: `
     <div class="app-container">
       <app-header></app-header>
 
       <div class="main-layout">
-        <app-sidebar></app-sidebar>
+        <app-sidebar (switchView)="onViewSwitch($event)"></app-sidebar>
 
-        <main class="workspace">
-          <!-- Empty State -->
-          <div *ngIf="!detail" class="empty-state">
-            <div class="empty-icon">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 2H9C9.55228 2 10 2.44772 10 3V5H14V3C14 2.44772 14.4477 2 15 2H18C18.5523 2 19 2.44772 19 3V5H21C21.5523 5 22 5.44772 22 6V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 16.5C16 16.5 15.5 18 13 18C10.5 18 10 16.5 10 16.5C10 16.5 9.5 18 7 18C4.5 18 4 16.5 4 16.5V6H16V16.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 21H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h2>No Procurement Request Selected</h2>
-            <p>Enter a natural language request on the left or select an existing procurement run from history to inspect the autonomous agent state machine.</p>
+        <main class="workspace" id="workspace">
+          <!-- Analytics View -->
+          <div *ngIf="currentView === 'analytics'">
+            <app-analytics-dashboard></app-analytics-dashboard>
           </div>
 
-          <!-- Active Procurement Workspace -->
-          <div *ngIf="detail" class="active-workspace">
-            <!-- Summary Bar & Stepper -->
-            <div class="glass-card request-summary-card">
-              <div class="req-header-row">
-                <div>
-                  <span class="req-id">{{ detail.request.id }}</span>
-                  <h2>
-                    {{ (detail.request.intent?.category || 'Procurement') | uppercase }} Batch ({{ detail.request.quantity || 0 }} Units)
-                  </h2>
-                  <p class="req-prompt">"{{ detail.request.rawPrompt }}"</p>
-                </div>
-                <div class="req-badge-group">
-                  <span class="state-badge">{{ detail.request.state }}</span>
-                  <div class="correlation-pill">Correlation ID: {{ detail.request.correlationId }}</div>
-                </div>
-              </div>
+          <!-- Bulk Import View -->
+          <div *ngIf="currentView === 'bulk'">
+            <app-bulk-import></app-bulk-import>
+          </div>
 
-              <app-stepper [currentState]="detail.request.state"></app-stepper>
+          <!-- Analytics View -->
+          <div *ngIf="currentView === 'analytics'">
+            <app-analytics-dashboard></app-analytics-dashboard>
+          </div>
+
+          <!-- Bulk Import View -->
+          <div *ngIf="currentView === 'bulk'">
+            <app-bulk-import></app-bulk-import>
+          </div>
+
+          <!-- Bulk Import View -->
+          <div *ngIf="currentView === 'bulk'">
+            <app-bulk-import></app-bulk-import>
+          </div>
+
+          <!-- Main Dashboard View -->
+          <div *ngIf="currentView === 'dashboard'">
+            <!-- Empty State -->
+            <div *ngIf="!detail" class="empty-state">
+              <div class="empty-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 2H9C9.55228 2 10 2.44772 10 3V5H14V3C14 2.44772 14.4477 2 15 2H18C18.5523 2 19 2.44772 19 3V5H21C21.5523 5 22 5.44772 22 6V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M16 16.5C16 16.5 15.5 18 13 18C10.5 18 10 16.5 10 16.5C10 16.5 9.5 18 7 18C4.5 18 4 16.5 4 16.5V6H16V16.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M16 21H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h2>No Procurement Request Selected</h2>
+              <p>Enter a natural language request on the left or select an existing procurement run from history to inspect the autonomous agent state machine.</p>
             </div>
 
-            <!-- Workspace Grid -->
-            <div class="workspace-grid">
-              <!-- Left Column -->
-              <div class="grid-col main-col">
-                <app-intent-card [request]="detail.request"></app-intent-card>
-
-                <app-offers-matrix
-                  [offers]="detail.offers"
-                  [selectedOfferId]="detail.request.selectedOfferId"
-                ></app-offers-matrix>
-
-                <div class="glass-card reasoning-card">
-                  <h3>AI Strategic Recommendation & Risk Analysis</h3>
-                  <div class="reasoning-box">
-                    <p>{{ detail.request.aiRecommendationReasoning || 'AI agent is compiling scoring matrices...' }}</p>
+            <!-- Active Procurement Workspace -->
+            <div *ngIf="detail" class="active-workspace">
+              <!-- Summary Bar & Stepper -->
+              <div class="glass-card request-summary-card">
+                <div class="req-header-row">
+                  <div>
+                    <span class="req-id">{{ detail.request.id }}</span>
+                    <h2>
+                      {{ (detail.request.intent?.category || 'Procurement') | uppercase }} Batch ({{ detail.request.quantity || 0 }} Units)
+                    </h2>
+                    <p class="req-prompt">"{{ detail.request.rawPrompt }}"</p>
+                  </div>
+                  <div class="req-badge-group">
+                    <span class="state-badge">{{ detail.request.state }}</span>
+                    <div class="correlation-pill">Correlation ID: {{ detail.request.correlationId }}</div>
                   </div>
                 </div>
+
+                <app-stepper [currentState]="detail.request.state"></app-stepper>
               </div>
 
-              <!-- Right Column -->
-              <div class="grid-col side-col">
-                <app-approval-card [request]="detail.request"></app-approval-card>
-                <app-negotiation-card [negotiations]="detail.negotiations"></app-negotiation-card>
-                <app-order-card [order]="detail.order"></app-order-card>
-                <app-audit-timeline [auditTrail]="detail.auditTrail"></app-audit-timeline>
-                <app-payload-inspector [payload]="topBecknPayload"></app-payload-inspector>
+              <!-- Workspace Grid -->
+              <div class="workspace-grid">
+                <!-- Left Column -->
+                <div class="grid-col main-col">
+                  <app-intent-card [request]="detail.request"></app-intent-card>
+
+                  <app-offers-matrix
+                    [offers]="detail.offers"
+                    [selectedOfferId]="detail.request.selectedOfferId"
+                  ></app-offers-matrix>
+
+                  <div class="glass-card reasoning-card">
+                    <h3>AI Strategic Recommendation & Risk Analysis</h3>
+                    <div class="reasoning-box">
+                      <p>{{ detail.request.aiRecommendationReasoning || 'AI agent is compiling scoring matrices...' }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="grid-col side-col">
+                  <app-approval-card [request]="detail.request"></app-approval-card>
+                  <app-negotiation-card [negotiations]="detail.negotiations"></app-negotiation-card>
+                  <app-order-card [order]="detail.order"></app-order-card>
+                  <app-audit-timeline [auditTrail]="detail.auditTrail"></app-audit-timeline>
+                  <app-payload-inspector [payload]="topBecknPayload"></app-payload-inspector>
+                </div>
               </div>
             </div>
           </div>
@@ -146,11 +180,19 @@ import { PayloadInspectorComponent } from './components/payload-inspector/payloa
 })
 export class AppComponent implements OnInit {
   detail: ProcurementDetail | null = null;
+  currentView: string = 'dashboard';
 
-  constructor(private procurementService: ProcurementService) {}
+  constructor(
+    private procurementService: ProcurementService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.procurementService.activeDetail$.subscribe(d => this.detail = d);
+  }
+
+  onViewSwitch(view: string) {
+    this.currentView = view;
   }
 
   get topBecknPayload(): any {

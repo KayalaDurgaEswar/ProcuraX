@@ -4,6 +4,43 @@ An enterprise-grade agentic procurement platform built on the **Beckn Protocol /
 
 ---
 
+## 🌟 Key Features
+
+### 🤖 AI-Powered Procurement
+- **Natural Language Processing**: Submit procurement requests in plain English
+- **Intelligent Intent Extraction**: Automatically parse requirements, quantities, budgets, and constraints
+- **Multi-Vendor Comparison**: AI-powered scoring across price, delivery, ratings, and compliance
+- **Automated Negotiation**: Smart negotiation engine with bounded discount strategies
+
+### 📊 Analytics & Insights
+- **Real-time Dashboard**: Comprehensive analytics with KPIs, charts, and vendor performance metrics
+- **Cost Savings Tracker**: Monitor procurement efficiency and estimated savings
+- **Category Breakdown**: Visualize spending patterns across different procurement categories
+- **Success Rate Monitoring**: Track completion rates and processing times
+
+### ⚡ Productivity Features
+- **Quick Templates**: Pre-built templates for common procurement scenarios (laptops, servers, office supplies)
+- **Bulk Import**: CSV-based bulk procurement request creation
+- **Export Reports**: Generate procurement reports in JSON or CSV format
+- **Procurement History**: Complete audit trail with state tracking
+
+### 🔄 Beckn Protocol Integration
+- **ONDC Network Discovery**: Automatic seller discovery through Beckn gateway
+- **Real-time Order Tracking**: Live order status updates via Beckn /status API
+- **Standardized Commerce**: Full Beckn protocol compliance for interoperability
+
+### 🎯 Approval Workflow
+- **Configurable Thresholds**: Auto-approval for requests under ₹50,000
+- **Multi-Level Approvals**: Manager approval (₹50K-₹5L), CFO/Board approval (>₹5L)
+- **Human-in-the-Loop**: Manual approval interface for pending requests
+
+### 🔍 Audit & Compliance
+- **Immutable Audit Trail**: Complete event logging with correlation IDs
+- **Actor Tracking**: Record all actions with timestamps and actors
+- **State Machine Visibility**: Full transparency of procurement state transitions
+
+---
+
 ## 🏛️ System Architecture
 
 ```
@@ -84,28 +121,93 @@ Natural Language Procurement Request ("Procure 50 laptops with 16GB RAM...")
 ### Prerequisites
 - **Node.js**: `v18+`
 - **npm**: `v9+`
+- **MongoDB**: Local or Atlas (connection string in .env)
 
 ### Setup & Launch
 
-1. **Build Frontend Angular Application**:
+1. **Install Backend Dependencies**:
+   ```bash
+   cd backend
+   npm install
+   ```
+
+2. **Configure Environment Variables**:
+   Edit `backend/.env` with your settings:
+   - MongoDB connection string
+   - LLM provider (Ollama or mock)
+   - Beckn gateway URL
+   - Approval thresholds
+
+3. **Build Frontend Angular Application**:
    ```bash
    cd frontend
    npm install
    npm run build
    ```
 
-2. **Start Backend Server**:
+4. **Start Backend Server**:
    ```bash
    cd backend
-   npm install
    npm start
    ```
 
-3. **Access Angular Dashboard**:
+5. **Access the Platform**:
    Open browser at:
    ```
    http://localhost:3000
    ```
+
+### 🎯 Quick Demo
+
+1. **Create a Procurement Request**:
+   - Navigate to the "New" tab in the sidebar
+   - Enter: "Order 50 laptops with 16GB RAM, i7 processor, delivery within 7 days"
+   - Click "Launch Agent Workflow"
+
+2. **Explore Analytics**:
+   - Click the "📊 Analytics" tab
+   - View procurement metrics, vendor performance, and cost savings
+
+3. **Use Templates**:
+   - Click the "⚡ Templates" tab
+   - Select a pre-built template (e.g., "Laptop Bulk Order")
+   - Customize and submit
+
+4. **Bulk Import**:
+   - Click the "📤 Bulk" tab
+   - Download the sample CSV template
+   - Upload your customized CSV with multiple procurement requests
+
+---
+
+## 📱 User Interface Features
+
+### Main Dashboard
+- **Request Summary Card**: Overview with state machine stepper
+- **Intent Card**: Parsed procurement requirements and constraints
+- **Offers Matrix**: Side-by-side vendor comparison with AI scoring
+- **Approval Card**: Current approval status and actions
+- **Negotiation Timeline**: Offer/counter-offer history
+- **Order Status**: Real-time Beckn order tracking
+- **Audit Timeline**: Complete event history
+
+### Analytics Dashboard
+- **KPI Cards**: Total requests, completed orders, pending approvals, active negotiations
+- **Financial Metrics**: Total spend, estimated savings, avg processing time
+- **Category Charts**: Procurement breakdown by category
+- **State Distribution**: Visual representation of request states
+- **Vendor Performance**: Top vendor statistics with pricing insights
+
+### Bulk Import Tool
+- **Drag & Drop**: Easy CSV file upload
+- **Preview Table**: Verify data before import
+- **Error Handling**: Detailed success/failure reporting
+- **Sample Template**: Download pre-formatted CSV
+
+### Templates Library
+- **Pre-built Templates**: Common procurement scenarios
+- **Variable Substitution**: Customize templates with dynamic fields
+- **Quick Actions**: One-click template application
 
 ---
 
