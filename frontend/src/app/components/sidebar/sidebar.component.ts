@@ -1,7 +1,8 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProcurementService } from '../../services/procurement.service';
+import { ProcurementRequest } from '../../models/procurement.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -26,14 +27,14 @@ import { FormsModule } from '@angular/forms';
         <button 
           class="nav-tab" 
           [class.active]="activeTab === 'analytics'"
-          (click)="switchView.emit('analytics')">
+          (click)="onTabClick('analytics')">
           📊 Analytics
         </button>
         <button 
           class="nav-tab" 
           [class.active]="activeTab === 'bulk'"
-          (click)="switchView.emit('bulk')">
-          Bulk
+          (click)="onTabClick('bulk')">
+          📦 Bulk
         </button>
       </div>
 
@@ -57,13 +58,16 @@ import { FormsModule } from '@angular/forms';
           </div>
 
           <button type="submit" class="btn-primary" [disabled]="loading || !prompt.trim()">
-            <span>{{ loading ? 'Processing...' : 'Launch Agent Workflow' }}</span>
+            <span>{{ loading ? '⚡ AI Agent Processing...' : '🚀 Launch Agent Workflow' }}</span>
           </button>
         </form>
 
         <div class="quick-actions">
-          <button class="action-btn" (click)="switchView.emit('bulk')">
+          <button class="action-btn" (click)="onTabClick('bulk')">
             Bulk Import
+          </button>
+          <button class="action-btn" (click)="onTabClick('analytics')">
+            Analytics
           </button>
         </div>
       </div>
@@ -87,7 +91,7 @@ import { FormsModule } from '@angular/forms';
             </div>
             <div class="req-item-prompt">{{ req.rawPrompt }}</div>
           </div>
-          <p *ngIf="requests.length === 0" class="text-muted" style="font-size:12px;">No past procurements yet.</p>
+          <p *ngIf="requests.length === 0" class="text-muted" style="font-size:12px;">No past procurements found in MongoDB.</p>
         </div>
       </div>
     </aside>
@@ -208,23 +212,37 @@ import { FormsModule } from '@angular/forms';
     .req-item-prompt { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   `]
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   prompt: string = '';
-  requests: any[] = [];
+  requests: ProcurementRequest[] = [];
   activeId: string | null = null;
   loading: boolean = false;
   activeTab: string = 'new';
 
   @Output() switchView = new EventEmitter<string>();
 
-  constructor(private router: Router) {}
+  constructor(private procurementService: ProcurementService) {}
 
   ngOnInit() {
+    this.procurementService.requests$.subscribe(reqs => {
+      this.requests = reqs;
+    });
+
+    this.procurementService.activeDetail$.subscribe(detail => {
+      if (detail?.request) {
+        this.activeId = detail.request.id;
+      }
+    });
+
+    this.procurementService.loading$.subscribe(l => {
+      this.loading = l;
+    });
+
     this.loadRequests();
   }
 
   loadRequests() {
-    this.requests = [];
+    this.procurementService.loadProcurements().subscribe();
   }
 
   refresh() {
@@ -233,12 +251,28 @@ export class SidebarComponent {
 
   onSubmit() {
     if (!this.prompt.trim() || this.loading) return;
-    alert('Request submitted: ' + this.prompt);
-    this.prompt = '';
+    const currentPrompt = this.prompt;
+    this.procurementService.createProcurement(currentPrompt).subscribe({
+      next: () => {
+        this.prompt = '';
+        this.switchView.emit('dashboard');
+      },
+      error: (err) => {
+        console.error('Failed to submit procurement:', err);
+        alert('Failed to launch procurement workflow: ' + (err.error?.error || err.message));
+      }
+    });
   }
 
   selectRequest(id: string) {
     this.activeId = id;
+    this.procurementService.loadProcurementDetail(id).subscribe();
+    this.switchView.emit('dashboard');
+  }
+
+  onTabClick(view: string) {
+    this.activeTab = view;
+    this.switchView.emit(view);
   }
 
   fillSample(index: number) {
@@ -251,3 +285,4 @@ export class SidebarComponent {
     }
   }
 }
+
