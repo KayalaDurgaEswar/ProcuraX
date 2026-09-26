@@ -319,6 +319,14 @@
       "rejectionReason": "Rejected by Manager"
     },
     {
+      "id": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "userId": "user_procurement_lead",
+      "orgId": "org_acme_corp_001",
+      "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000.",
+      "state": "PENDING_APPROVAL",
+      "createdAt": "2026-09-25T13:41:56.999Z",
+      "updatedAt": "2026-09-25T13:41:57.426Z",
       "id": "proc_b5e4f062",
       "correlationId": "corr_a1d2ffd4-245",
       "userId": "user_procurement_lead",
@@ -334,6 +342,7 @@
         "location": "Hyderabad",
         "budgetINR": 500000,
         "currency": "INR",
+        "deliveryDeadlineDays": 5,
         "deliveryDeadlineDays": 7,
         "requirements": {
           "ram": "16GB",
@@ -342,6 +351,9 @@
           "warranty": "3-Year Onsite OEM Warranty"
         },
         "constraints": [
+          "Delivery to Hyderabad within 5 days",
+          "Total budget not exceeding ₹5,00,000",
+          "Minimum specification: 16GB, i7 Processor"
           "Delivery to Hyderabad within 7 days",
           "Total budget not exceeding ₹5,00,000",
           "Minimum specification: 16GB RAM, i7 Processor"
@@ -355,6 +367,222 @@
       "quantity": 10,
       "location": "Hyderabad",
       "budgetPaise": 50000000,
+      "deliveryDeadlineDays": 5,
+      "offerCount": 4,
+      "selectedOfferId": "off_seller_ent_03_ecf26534",
+      "aiRecommendationReasoning": "AI Procurement Strategic Recommendation:\n- Top Recommendation: Enterprise Direct Solutions (Score: 60/100)\n- Total Cost: ₹9,80,000 (₹98,000/unit vs budget ₹5,00,000)\n- Estimated Delivery: 3 Days (Deadline: 5 Days)\n- Vendor Reputation & Compliance: 4.9/5 Stars, 100% Compliance\n- Key Advantage: Best balance of competitive pricing, high compliance rating, and fast fulfillment speed.",
+      "approvalRequirement": {
+        "level": "ENTERPRISE_BOARD_APPROVAL",
+        "requiresHumanApproval": true,
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "description": "High-value order (₹9,80,000) requires CFO / Enterprise Procurement Board approval (> ₹5,00,000)."
+      }
+    },
+    {
+      "id": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "userId": "user_procurement_lead",
+      "orgId": "org_acme_corp_001",
+      "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000.",
+      "state": "PENDING_APPROVAL",
+      "createdAt": "2026-09-25T13:42:38.663Z",
+      "updatedAt": "2026-09-25T13:42:39.064Z",
+      "intent": {
+        "category": "laptop",
+        "item": "Laptop Enterprise Batch",
+        "quantity": 10,
+        "location": "Hyderabad",
+        "budgetINR": 500000,
+        "currency": "INR",
+        "deliveryDeadlineDays": 5,
+        "requirements": {
+          "ram": "16GB",
+          "processor": "Intel Core i7",
+          "storage": "512GB SSD",
+          "warranty": "3-Year Onsite OEM Warranty"
+        },
+        "constraints": [
+          "Delivery to Hyderabad within 5 days",
+          "Total budget not exceeding ₹5,00,000",
+          "Minimum specification: 16GB, i7 Processor"
+        ],
+        "preferences": [
+          "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+          "Sellers with compliance rating >= 90%",
+          "Bulk discount eligible"
+        ]
+      },
+      "quantity": 10,
+      "location": "Hyderabad",
+      "budgetPaise": 50000000,
+      "deliveryDeadlineDays": 5,
+      "offerCount": 4,
+      "selectedOfferId": "off_seller_ent_03_c1cbc426",
+      "aiRecommendationReasoning": "AI Procurement Strategic Recommendation:\n- Top Recommendation: Enterprise Direct Solutions (Score: 60/100)\n- Total Cost: ₹9,80,000 (₹98,000/unit vs budget ₹5,00,000)\n- Estimated Delivery: 3 Days (Deadline: 5 Days)\n- Vendor Reputation & Compliance: 4.9/5 Stars, 100% Compliance\n- Key Advantage: Best balance of competitive pricing, high compliance rating, and fast fulfillment speed.",
+      "approvalRequirement": {
+        "level": "ENTERPRISE_BOARD_APPROVAL",
+        "requiresHumanApproval": true,
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "description": "High-value order (₹9,80,000) requires CFO / Enterprise Procurement Board approval (> ₹5,00,000)."
+      }
+    },
+    {
+      "id": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "userId": "user_procurement_lead",
+      "orgId": "org_acme_corp_001",
+      "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000.",
+      "state": "PENDING_APPROVAL",
+      "createdAt": "2026-09-25T13:43:16.574Z",
+      "updatedAt": "2026-09-25T13:43:17.022Z",
+      "intent": {
+        "category": "laptop",
+        "item": "Laptop Enterprise Batch",
+        "quantity": 10,
+        "location": "Hyderabad",
+        "budgetINR": 500000,
+        "currency": "INR",
+        "deliveryDeadlineDays": 5,
+        "requirements": {
+          "ram": "16GB",
+          "processor": "Intel Core i7",
+          "storage": "512GB SSD",
+          "warranty": "3-Year Onsite OEM Warranty"
+        },
+        "constraints": [
+          "Delivery to Hyderabad within 5 days",
+          "Total budget not exceeding ₹5,00,000",
+          "Minimum specification: 16GB, i7 Processor"
+        ],
+        "preferences": [
+          "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+          "Sellers with compliance rating >= 90%",
+          "Bulk discount eligible"
+        ]
+      },
+      "quantity": 10,
+      "location": "Hyderabad",
+      "budgetPaise": 50000000,
+      "deliveryDeadlineDays": 5,
+      "offerCount": 4,
+      "selectedOfferId": "off_seller_ent_03_09ea5825",
+      "aiRecommendationReasoning": "AI Procurement Strategic Recommendation:\n- Top Recommendation: Enterprise Direct Solutions (Score: 60/100)\n- Total Cost: ₹9,80,000 (₹98,000/unit vs budget ₹5,00,000)\n- Estimated Delivery: 3 Days (Deadline: 5 Days)\n- Vendor Reputation & Compliance: 4.9/5 Stars, 100% Compliance\n- Key Advantage: Best balance of competitive pricing, high compliance rating, and fast fulfillment speed.",
+      "approvalRequirement": {
+        "level": "ENTERPRISE_BOARD_APPROVAL",
+        "requiresHumanApproval": true,
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "description": "High-value order (₹9,80,000) requires CFO / Enterprise Procurement Board approval (> ₹5,00,000)."
+      }
+    },
+    {
+      "id": "audit_route_test",
+      "correlationId": "corr_route_test",
+      "userId": "user_procurement_lead",
+      "orgId": "org_acme_corp_001",
+      "rawPrompt": "Audit route validation",
+      "state": "PENDING_APPROVAL",
+      "createdAt": "2026-09-25T14:00:46.410Z",
+      "updatedAt": "2026-09-25T14:00:46.412Z"
+    },
+    {
+      "id": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "userId": "user_procurement_lead",
+      "orgId": "org_acme_corp_001",
+      "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000.",
+      "state": "PENDING_APPROVAL",
+      "createdAt": "2026-09-25T14:00:46.451Z",
+      "updatedAt": "2026-09-25T14:00:46.820Z",
+      "intent": {
+        "category": "laptop",
+        "item": "Laptop Enterprise Batch",
+        "quantity": 10,
+        "location": "Hyderabad",
+        "budgetINR": 500000,
+        "currency": "INR",
+        "deliveryDeadlineDays": 5,
+        "requirements": {
+          "ram": "16GB",
+          "processor": "Intel Core i7",
+          "storage": "512GB SSD",
+          "warranty": "3-Year Onsite OEM Warranty"
+        },
+        "constraints": [
+          "Delivery to Hyderabad within 5 days",
+          "Total budget not exceeding ₹5,00,000",
+          "Minimum specification: 16GB, i7 Processor"
+        ],
+        "preferences": [
+          "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+          "Sellers with compliance rating >= 90%",
+          "Bulk discount eligible"
+        ]
+      },
+      "quantity": 10,
+      "location": "Hyderabad",
+      "budgetPaise": 50000000,
+      "deliveryDeadlineDays": 5,
+      "offerCount": 4,
+      "selectedOfferId": "off_seller_ent_03_d6fd2bbc",
+      "aiRecommendationReasoning": "AI Procurement Strategic Recommendation:\n- Top Recommendation: Enterprise Direct Solutions (Score: 60/100)\n- Total Cost: ₹9,80,000 (₹98,000/unit vs budget ₹5,00,000)\n- Estimated Delivery: 3 Days (Deadline: 5 Days)\n- Vendor Reputation & Compliance: 4.9/5 Stars, 100% Compliance\n- Key Advantage: Best balance of competitive pricing, high compliance rating, and fast fulfillment speed.",
+      "approvalRequirement": {
+        "level": "ENTERPRISE_BOARD_APPROVAL",
+        "requiresHumanApproval": true,
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "description": "High-value order (₹9,80,000) requires CFO / Enterprise Procurement Board approval (> ₹5,00,000)."
+      }
+    },
+    {
+      "id": "audit_route_test",
+      "correlationId": "corr_route_test",
+      "userId": "user_procurement_lead",
+      "orgId": "org_acme_corp_001",
+      "rawPrompt": "Audit route validation",
+      "state": "PENDING_APPROVAL",
+      "createdAt": "2026-09-25T14:22:59.840Z",
+      "updatedAt": "2026-09-25T14:22:59.841Z"
+    },
+    {
+      "id": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "userId": "user_procurement_lead",
+      "orgId": "org_acme_corp_001",
+      "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000.",
+      "state": "PENDING_APPROVAL",
+      "createdAt": "2026-09-25T14:22:59.877Z",
+      "updatedAt": "2026-09-25T14:23:00.263Z",
+      "intent": {
+        "category": "laptop",
+        "item": "Laptop Enterprise Batch",
+        "quantity": 10,
+        "location": "Hyderabad",
+        "budgetINR": 500000,
+        "currency": "INR",
+        "deliveryDeadlineDays": 5,
+        "requirements": {
+          "ram": "16GB",
+          "processor": "Intel Core i7",
+          "storage": "512GB SSD",
+          "warranty": "3-Year Onsite OEM Warranty"
+        },
+        "constraints": [
+          "Delivery to Hyderabad within 5 days",
+          "Total budget not exceeding ₹5,00,000",
+          "Minimum specification: 16GB, i7 Processor"
+        ],
+        "preferences": [
+          "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+          "Sellers with compliance rating >= 90%",
+          "Bulk discount eligible"
+        ]
+      },
+      "quantity": 10,
+      "location": "Hyderabad",
+      "budgetPaise": 50000000,
+      "deliveryDeadlineDays": 5,
+      "offerCount": 4,
+      "selectedOfferId": "off_seller_ent_03_f05bf6fb",
+      "aiRecommendationReasoning": "AI Procurement Strategic Recommendation:\n- Top Recommendation: Enterprise Direct Solutions (Score: 60/100)\n- Total Cost: ₹9,80,000 (₹98,000/unit vs budget ₹5,00,000)\n- Estimated Delivery: 3 Days (Deadline: 5 Days)\n- Vendor Reputation & Compliance: 4.9/5 Stars, 100% Compliance\n- Key Advantage: Best balance of competitive pricing, high compliance rating, and fast fulfillment speed.",
       "deliveryDeadlineDays": 7,
       "offerCount": 4,
       "selectedOfferId": "off_seller_ent_03_7a77cdaf",
@@ -1709,6 +1937,968 @@
       "updatedAt": "2026-09-25T12:10:04.866Z"
     },
     {
+      "id": "off_seller_techsupply_01_e23de6b5",
+      "sellerId": "seller_techsupply_01",
+      "sellerName": "TechSupply Corp (ONDC Registered)",
+      "sellerRating": 4.7,
+      "complianceScore": 100,
+      "itemTitle": "Dell Latitude 5440 Enterprise Laptop (16GB, i7-1360P, 512GB SSD)",
+      "unitPricePaise": 9100000,
+      "quantity": 10,
+      "totalPricePaise": 91000000,
+      "totalPriceINR": 910000,
+      "deliveryDays": 5,
+      "location": "Hyderabad Warehouse",
+      "warranty": "3-Year Onsite OEM Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8700000,
+      "becknFulfillmentId": "ful_ts_hyder_01",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_techsupply_01.beckn.org",
+        "transaction_id": "corr_8da0c133-cb9",
+        "message_id": "328acaa7-b0cc-4a3f-bbb5-845e9e9a8667",
+        "timestamp": "2026-09-25T13:41:57.335Z"
+      },
+      "procurementId": "proc_de8e8fc8",
+      "createdAt": "2026-09-25T13:41:57.335Z",
+      "updatedAt": "2026-09-25T13:41:57.386Z",
+      "score": 59,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 70,
+        "ratingScore": 94,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 56/100. Price: ₹4,10,000 OVER budget (Score: 0). Delivery: Delivering in 5 days (meets 5 day deadline) (Score: 70). Rating: 4.7/5 (Score: 94). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_omni_02_50276840",
+      "sellerId": "seller_omni_02",
+      "sellerName": "OmniLaptops India Pvt Ltd",
+      "sellerRating": 4.3,
+      "complianceScore": 95,
+      "itemTitle": "HP ProBook 450 G10 (16GB RAM, Core i7 13th Gen, 512GB SSD)",
+      "unitPricePaise": 8700000,
+      "quantity": 10,
+      "totalPricePaise": 87000000,
+      "totalPriceINR": 870000,
+      "deliveryDays": 10,
+      "location": "Bengaluru Hub",
+      "warranty": "3-Year Standard Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8400000,
+      "becknFulfillmentId": "ful_omni_blr_02",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_omni_02.beckn.org",
+        "transaction_id": "corr_8da0c133-cb9",
+        "message_id": "0ab804c2-c283-426c-b486-afeff3633697",
+        "timestamp": "2026-09-25T13:41:57.335Z"
+      },
+      "procurementId": "proc_de8e8fc8",
+      "createdAt": "2026-09-25T13:41:57.340Z",
+      "updatedAt": "2026-09-25T13:41:57.392Z",
+      "score": 45,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 25,
+        "ratingScore": 86,
+        "complianceScore": 95,
+        "specsScore": 95
+      },
+      "explanation": "Scored 42/100. Price: ₹3,70,000 OVER budget (Score: 0). Delivery: Delivering in 10 days (EXCEEDS 5 day deadline) (Score: 25). Rating: 4.3/5 (Score: 86). Compliance: 95%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_ent_03_ecf26534",
+      "sellerId": "seller_ent_03",
+      "sellerName": "Enterprise Direct Solutions",
+      "sellerRating": 4.9,
+      "complianceScore": 100,
+      "itemTitle": "Lenovo ThinkPad L14 Gen 4 (16GB RAM, i7 Processor, 1TB SSD)",
+      "unitPricePaise": 9800000,
+      "quantity": 10,
+      "totalPricePaise": 98000000,
+      "totalPriceINR": 980000,
+      "deliveryDays": 3,
+      "location": "Hyderabad Local Facility",
+      "warranty": "3-Year Premier Support",
+      "negotiable": false,
+      "minNegotiablePricePaise": 9800000,
+      "becknFulfillmentId": "ful_ent_hyd_express",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_ent_03.beckn.org",
+        "transaction_id": "corr_8da0c133-cb9",
+        "message_id": "e6f5e88b-f312-4632-a4dc-37e476129002",
+        "timestamp": "2026-09-25T13:41:57.335Z"
+      },
+      "procurementId": "proc_de8e8fc8",
+      "createdAt": "2026-09-25T13:41:57.345Z",
+      "updatedAt": "2026-09-25T13:41:57.380Z",
+      "score": 60,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 82,
+        "ratingScore": 98,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 60/100. Price: ₹4,80,000 OVER budget (Score: 0). Delivery: Delivering in 3 days (meets 5 day deadline) (Score: 82). Rating: 4.9/5 (Score: 98). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_b2b_04_325807f4",
+      "sellerId": "seller_b2b_04",
+      "sellerName": "QuickB2B Commercial Store",
+      "sellerRating": 3.9,
+      "complianceScore": 82,
+      "itemTitle": "Acer TravelMate P2 (16GB RAM, i7, 512GB SSD)",
+      "unitPricePaise": 8200000,
+      "quantity": 10,
+      "totalPricePaise": 82000000,
+      "totalPriceINR": 820000,
+      "deliveryDays": 12,
+      "location": "Mumbai Depot",
+      "warranty": "1-Year Limited Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 7900000,
+      "becknFulfillmentId": "ful_qb2b_mum_04",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_b2b_04.beckn.org",
+        "transaction_id": "corr_8da0c133-cb9",
+        "message_id": "a3673985-bc87-446b-af0d-09ce626cf178",
+        "timestamp": "2026-09-25T13:41:57.335Z"
+      },
+      "procurementId": "proc_de8e8fc8",
+      "createdAt": "2026-09-25T13:41:57.350Z",
+      "updatedAt": "2026-09-25T13:41:57.398Z",
+      "score": 33,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 0,
+        "ratingScore": 78,
+        "complianceScore": 82,
+        "specsScore": 95
+      },
+      "explanation": "Scored 33/100. Price: ₹3,20,000 OVER budget (Score: 0). Delivery: Delivering in 12 days (EXCEEDS 5 day deadline) (Score: 0). Rating: 3.9/5 (Score: 78). Compliance: 82%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_techsupply_01_2325940c",
+      "sellerId": "seller_techsupply_01",
+      "sellerName": "TechSupply Corp (ONDC Registered)",
+      "sellerRating": 4.7,
+      "complianceScore": 100,
+      "itemTitle": "Dell Latitude 5440 Enterprise Laptop (16GB, i7-1360P, 512GB SSD)",
+      "unitPricePaise": 9100000,
+      "quantity": 10,
+      "totalPricePaise": 91000000,
+      "totalPriceINR": 910000,
+      "deliveryDays": 5,
+      "location": "Hyderabad Warehouse",
+      "warranty": "3-Year Onsite OEM Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8700000,
+      "becknFulfillmentId": "ful_ts_hyder_01",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_techsupply_01.beckn.org",
+        "transaction_id": "corr_b841bfc3-afb",
+        "message_id": "c900ed1d-a78a-4771-8782-bc679faf4b1a",
+        "timestamp": "2026-09-25T13:42:39.021Z"
+      },
+      "procurementId": "proc_55a640c9",
+      "createdAt": "2026-09-25T13:42:39.021Z",
+      "updatedAt": "2026-09-25T13:42:39.046Z",
+      "score": 59,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 70,
+        "ratingScore": 94,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 56/100. Price: ₹4,10,000 OVER budget (Score: 0). Delivery: Delivering in 5 days (meets 5 day deadline) (Score: 70). Rating: 4.7/5 (Score: 94). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_omni_02_a24a0487",
+      "sellerId": "seller_omni_02",
+      "sellerName": "OmniLaptops India Pvt Ltd",
+      "sellerRating": 4.3,
+      "complianceScore": 95,
+      "itemTitle": "HP ProBook 450 G10 (16GB RAM, Core i7 13th Gen, 512GB SSD)",
+      "unitPricePaise": 8700000,
+      "quantity": 10,
+      "totalPricePaise": 87000000,
+      "totalPriceINR": 870000,
+      "deliveryDays": 10,
+      "location": "Bengaluru Hub",
+      "warranty": "3-Year Standard Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8400000,
+      "becknFulfillmentId": "ful_omni_blr_02",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_omni_02.beckn.org",
+        "transaction_id": "corr_b841bfc3-afb",
+        "message_id": "f834cae7-1fb4-431c-9907-f6eed8aa4993",
+        "timestamp": "2026-09-25T13:42:39.021Z"
+      },
+      "procurementId": "proc_55a640c9",
+      "createdAt": "2026-09-25T13:42:39.025Z",
+      "updatedAt": "2026-09-25T13:42:39.048Z",
+      "score": 45,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 25,
+        "ratingScore": 86,
+        "complianceScore": 95,
+        "specsScore": 95
+      },
+      "explanation": "Scored 42/100. Price: ₹3,70,000 OVER budget (Score: 0). Delivery: Delivering in 10 days (EXCEEDS 5 day deadline) (Score: 25). Rating: 4.3/5 (Score: 86). Compliance: 95%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_ent_03_c1cbc426",
+      "sellerId": "seller_ent_03",
+      "sellerName": "Enterprise Direct Solutions",
+      "sellerRating": 4.9,
+      "complianceScore": 100,
+      "itemTitle": "Lenovo ThinkPad L14 Gen 4 (16GB RAM, i7 Processor, 1TB SSD)",
+      "unitPricePaise": 9800000,
+      "quantity": 10,
+      "totalPricePaise": 98000000,
+      "totalPriceINR": 980000,
+      "deliveryDays": 3,
+      "location": "Hyderabad Local Facility",
+      "warranty": "3-Year Premier Support",
+      "negotiable": false,
+      "minNegotiablePricePaise": 9800000,
+      "becknFulfillmentId": "ful_ent_hyd_express",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_ent_03.beckn.org",
+        "transaction_id": "corr_b841bfc3-afb",
+        "message_id": "501117eb-711f-46b3-8c7b-1ea386392e5c",
+        "timestamp": "2026-09-25T13:42:39.021Z"
+      },
+      "procurementId": "proc_55a640c9",
+      "createdAt": "2026-09-25T13:42:39.028Z",
+      "updatedAt": "2026-09-25T13:42:39.043Z",
+      "score": 60,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 82,
+        "ratingScore": 98,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 60/100. Price: ₹4,80,000 OVER budget (Score: 0). Delivery: Delivering in 3 days (meets 5 day deadline) (Score: 82). Rating: 4.9/5 (Score: 98). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_b2b_04_43140e36",
+      "sellerId": "seller_b2b_04",
+      "sellerName": "QuickB2B Commercial Store",
+      "sellerRating": 3.9,
+      "complianceScore": 82,
+      "itemTitle": "Acer TravelMate P2 (16GB RAM, i7, 512GB SSD)",
+      "unitPricePaise": 8200000,
+      "quantity": 10,
+      "totalPricePaise": 82000000,
+      "totalPriceINR": 820000,
+      "deliveryDays": 12,
+      "location": "Mumbai Depot",
+      "warranty": "1-Year Limited Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 7900000,
+      "becknFulfillmentId": "ful_qb2b_mum_04",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_b2b_04.beckn.org",
+        "transaction_id": "corr_b841bfc3-afb",
+        "message_id": "bab4b0be-7d0b-4814-8a48-1da82267e55f",
+        "timestamp": "2026-09-25T13:42:39.021Z"
+      },
+      "procurementId": "proc_55a640c9",
+      "createdAt": "2026-09-25T13:42:39.032Z",
+      "updatedAt": "2026-09-25T13:42:39.050Z",
+      "score": 33,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 0,
+        "ratingScore": 78,
+        "complianceScore": 82,
+        "specsScore": 95
+      },
+      "explanation": "Scored 33/100. Price: ₹3,20,000 OVER budget (Score: 0). Delivery: Delivering in 12 days (EXCEEDS 5 day deadline) (Score: 0). Rating: 3.9/5 (Score: 78). Compliance: 82%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_techsupply_01_5fff05de",
+      "sellerId": "seller_techsupply_01",
+      "sellerName": "TechSupply Corp (ONDC Registered)",
+      "sellerRating": 4.7,
+      "complianceScore": 100,
+      "itemTitle": "Dell Latitude 5440 Enterprise Laptop (16GB, i7-1360P, 512GB SSD)",
+      "unitPricePaise": 9100000,
+      "quantity": 10,
+      "totalPricePaise": 91000000,
+      "totalPriceINR": 910000,
+      "deliveryDays": 5,
+      "location": "Hyderabad Warehouse",
+      "warranty": "3-Year Onsite OEM Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8700000,
+      "becknFulfillmentId": "ful_ts_hyder_01",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_techsupply_01.beckn.org",
+        "transaction_id": "corr_fc3cd7d6-2ac",
+        "message_id": "b136e642-8613-4165-96d8-760eab57dea7",
+        "timestamp": "2026-09-25T13:43:16.911Z"
+      },
+      "procurementId": "proc_dab0a411",
+      "createdAt": "2026-09-25T13:43:16.912Z",
+      "updatedAt": "2026-09-25T13:43:16.990Z",
+      "score": 59,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 70,
+        "ratingScore": 94,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 56/100. Price: ₹4,10,000 OVER budget (Score: 0). Delivery: Delivering in 5 days (meets 5 day deadline) (Score: 70). Rating: 4.7/5 (Score: 94). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_omni_02_66823fa5",
+      "sellerId": "seller_omni_02",
+      "sellerName": "OmniLaptops India Pvt Ltd",
+      "sellerRating": 4.3,
+      "complianceScore": 95,
+      "itemTitle": "HP ProBook 450 G10 (16GB RAM, Core i7 13th Gen, 512GB SSD)",
+      "unitPricePaise": 8700000,
+      "quantity": 10,
+      "totalPricePaise": 87000000,
+      "totalPriceINR": 870000,
+      "deliveryDays": 10,
+      "location": "Bengaluru Hub",
+      "warranty": "3-Year Standard Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8400000,
+      "becknFulfillmentId": "ful_omni_blr_02",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_omni_02.beckn.org",
+        "transaction_id": "corr_fc3cd7d6-2ac",
+        "message_id": "44a11e81-a89d-4185-a813-4b3c01e2eccc",
+        "timestamp": "2026-09-25T13:43:16.911Z"
+      },
+      "procurementId": "proc_dab0a411",
+      "createdAt": "2026-09-25T13:43:16.942Z",
+      "updatedAt": "2026-09-25T13:43:16.996Z",
+      "score": 45,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 25,
+        "ratingScore": 86,
+        "complianceScore": 95,
+        "specsScore": 95
+      },
+      "explanation": "Scored 42/100. Price: ₹3,70,000 OVER budget (Score: 0). Delivery: Delivering in 10 days (EXCEEDS 5 day deadline) (Score: 25). Rating: 4.3/5 (Score: 86). Compliance: 95%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_ent_03_09ea5825",
+      "sellerId": "seller_ent_03",
+      "sellerName": "Enterprise Direct Solutions",
+      "sellerRating": 4.9,
+      "complianceScore": 100,
+      "itemTitle": "Lenovo ThinkPad L14 Gen 4 (16GB RAM, i7 Processor, 1TB SSD)",
+      "unitPricePaise": 9800000,
+      "quantity": 10,
+      "totalPricePaise": 98000000,
+      "totalPriceINR": 980000,
+      "deliveryDays": 3,
+      "location": "Hyderabad Local Facility",
+      "warranty": "3-Year Premier Support",
+      "negotiable": false,
+      "minNegotiablePricePaise": 9800000,
+      "becknFulfillmentId": "ful_ent_hyd_express",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_ent_03.beckn.org",
+        "transaction_id": "corr_fc3cd7d6-2ac",
+        "message_id": "b2d81b51-144f-415d-8119-f22bbd6dd222",
+        "timestamp": "2026-09-25T13:43:16.911Z"
+      },
+      "procurementId": "proc_dab0a411",
+      "createdAt": "2026-09-25T13:43:16.947Z",
+      "updatedAt": "2026-09-25T13:43:16.985Z",
+      "score": 60,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 82,
+        "ratingScore": 98,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 60/100. Price: ₹4,80,000 OVER budget (Score: 0). Delivery: Delivering in 3 days (meets 5 day deadline) (Score: 82). Rating: 4.9/5 (Score: 98). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_b2b_04_1cac379a",
+      "sellerId": "seller_b2b_04",
+      "sellerName": "QuickB2B Commercial Store",
+      "sellerRating": 3.9,
+      "complianceScore": 82,
+      "itemTitle": "Acer TravelMate P2 (16GB RAM, i7, 512GB SSD)",
+      "unitPricePaise": 8200000,
+      "quantity": 10,
+      "totalPricePaise": 82000000,
+      "totalPriceINR": 820000,
+      "deliveryDays": 12,
+      "location": "Mumbai Depot",
+      "warranty": "1-Year Limited Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 7900000,
+      "becknFulfillmentId": "ful_qb2b_mum_04",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_b2b_04.beckn.org",
+        "transaction_id": "corr_fc3cd7d6-2ac",
+        "message_id": "1f92f428-8ce9-4ad3-a16b-244874143726",
+        "timestamp": "2026-09-25T13:43:16.912Z"
+      },
+      "procurementId": "proc_dab0a411",
+      "createdAt": "2026-09-25T13:43:16.957Z",
+      "updatedAt": "2026-09-25T13:43:17.001Z",
+      "score": 33,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 0,
+        "ratingScore": 78,
+        "complianceScore": 82,
+        "specsScore": 95
+      },
+      "explanation": "Scored 33/100. Price: ₹3,20,000 OVER budget (Score: 0). Delivery: Delivering in 12 days (EXCEEDS 5 day deadline) (Score: 0). Rating: 3.9/5 (Score: 78). Compliance: 82%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_techsupply_01_4f95a2c1",
+      "sellerId": "seller_techsupply_01",
+      "sellerName": "TechSupply Corp (ONDC Registered)",
+      "sellerRating": 4.7,
+      "complianceScore": 100,
+      "itemTitle": "Dell Latitude 5440 Enterprise Laptop (16GB, i7-1360P, 512GB SSD)",
+      "unitPricePaise": 9100000,
+      "quantity": 10,
+      "totalPricePaise": 91000000,
+      "totalPriceINR": 910000,
+      "deliveryDays": 5,
+      "location": "Hyderabad Warehouse",
+      "warranty": "3-Year Onsite OEM Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8700000,
+      "becknFulfillmentId": "ful_ts_hyder_01",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_techsupply_01.beckn.org",
+        "transaction_id": "corr_e0c92719-bfd",
+        "message_id": "483c0894-2082-4e1f-acc2-5afc2f7fe649",
+        "timestamp": "2026-09-25T14:00:46.788Z"
+      },
+      "procurementId": "proc_a81608c5",
+      "createdAt": "2026-09-25T14:00:46.789Z",
+      "updatedAt": "2026-09-25T14:00:46.807Z",
+      "score": 59,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 70,
+        "ratingScore": 94,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 56/100. Price: ₹4,10,000 OVER budget (Score: 0). Delivery: Delivering in 5 days (meets 5 day deadline) (Score: 70). Rating: 4.7/5 (Score: 94). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_omni_02_e63bda61",
+      "sellerId": "seller_omni_02",
+      "sellerName": "OmniLaptops India Pvt Ltd",
+      "sellerRating": 4.3,
+      "complianceScore": 95,
+      "itemTitle": "HP ProBook 450 G10 (16GB RAM, Core i7 13th Gen, 512GB SSD)",
+      "unitPricePaise": 8700000,
+      "quantity": 10,
+      "totalPricePaise": 87000000,
+      "totalPriceINR": 870000,
+      "deliveryDays": 10,
+      "location": "Bengaluru Hub",
+      "warranty": "3-Year Standard Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8400000,
+      "becknFulfillmentId": "ful_omni_blr_02",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_omni_02.beckn.org",
+        "transaction_id": "corr_e0c92719-bfd",
+        "message_id": "cfaac23d-5e47-413f-b8b0-2b94f8acfb73",
+        "timestamp": "2026-09-25T14:00:46.788Z"
+      },
+      "procurementId": "proc_a81608c5",
+      "createdAt": "2026-09-25T14:00:46.791Z",
+      "updatedAt": "2026-09-25T14:00:46.808Z",
+      "score": 45,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 25,
+        "ratingScore": 86,
+        "complianceScore": 95,
+        "specsScore": 95
+      },
+      "explanation": "Scored 42/100. Price: ₹3,70,000 OVER budget (Score: 0). Delivery: Delivering in 10 days (EXCEEDS 5 day deadline) (Score: 25). Rating: 4.3/5 (Score: 86). Compliance: 95%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_ent_03_d6fd2bbc",
+      "sellerId": "seller_ent_03",
+      "sellerName": "Enterprise Direct Solutions",
+      "sellerRating": 4.9,
+      "complianceScore": 100,
+      "itemTitle": "Lenovo ThinkPad L14 Gen 4 (16GB RAM, i7 Processor, 1TB SSD)",
+      "unitPricePaise": 9800000,
+      "quantity": 10,
+      "totalPricePaise": 98000000,
+      "totalPriceINR": 980000,
+      "deliveryDays": 3,
+      "location": "Hyderabad Local Facility",
+      "warranty": "3-Year Premier Support",
+      "negotiable": false,
+      "minNegotiablePricePaise": 9800000,
+      "becknFulfillmentId": "ful_ent_hyd_express",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_ent_03.beckn.org",
+        "transaction_id": "corr_e0c92719-bfd",
+        "message_id": "6485c93f-1624-473c-bc11-9b7fe34f948d",
+        "timestamp": "2026-09-25T14:00:46.788Z"
+      },
+      "procurementId": "proc_a81608c5",
+      "createdAt": "2026-09-25T14:00:46.792Z",
+      "updatedAt": "2026-09-25T14:00:46.804Z",
+      "score": 60,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 82,
+        "ratingScore": 98,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 60/100. Price: ₹4,80,000 OVER budget (Score: 0). Delivery: Delivering in 3 days (meets 5 day deadline) (Score: 82). Rating: 4.9/5 (Score: 98). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_b2b_04_42c0243b",
+      "sellerId": "seller_b2b_04",
+      "sellerName": "QuickB2B Commercial Store",
+      "sellerRating": 3.9,
+      "complianceScore": 82,
+      "itemTitle": "Acer TravelMate P2 (16GB RAM, i7, 512GB SSD)",
+      "unitPricePaise": 8200000,
+      "quantity": 10,
+      "totalPricePaise": 82000000,
+      "totalPriceINR": 820000,
+      "deliveryDays": 12,
+      "location": "Mumbai Depot",
+      "warranty": "1-Year Limited Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 7900000,
+      "becknFulfillmentId": "ful_qb2b_mum_04",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_b2b_04.beckn.org",
+        "transaction_id": "corr_e0c92719-bfd",
+        "message_id": "f8aeb15f-4201-4e1b-afa1-d39383838a59",
+        "timestamp": "2026-09-25T14:00:46.788Z"
+      },
+      "procurementId": "proc_a81608c5",
+      "createdAt": "2026-09-25T14:00:46.794Z",
+      "updatedAt": "2026-09-25T14:00:46.810Z",
+      "score": 33,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 0,
+        "ratingScore": 78,
+        "complianceScore": 82,
+        "specsScore": 95
+      },
+      "explanation": "Scored 33/100. Price: ₹3,20,000 OVER budget (Score: 0). Delivery: Delivering in 12 days (EXCEEDS 5 day deadline) (Score: 0). Rating: 3.9/5 (Score: 78). Compliance: 82%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_techsupply_01_78fb4d75",
+      "sellerId": "seller_techsupply_01",
+      "sellerName": "TechSupply Corp (ONDC Registered)",
+      "sellerRating": 4.7,
+      "complianceScore": 100,
+      "itemTitle": "Dell Latitude 5440 Enterprise Laptop (16GB, i7-1360P, 512GB SSD)",
+      "unitPricePaise": 9100000,
+      "quantity": 10,
+      "totalPricePaise": 91000000,
+      "totalPriceINR": 910000,
+      "deliveryDays": 5,
+      "location": "Hyderabad Warehouse",
+      "warranty": "3-Year Onsite OEM Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8700000,
+      "becknFulfillmentId": "ful_ts_hyder_01",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_techsupply_01.beckn.org",
+        "transaction_id": "corr_a6af810a-163",
+        "message_id": "257a29d1-b6c4-4476-9383-9bf2c259935a",
+        "timestamp": "2026-09-25T14:23:00.216Z"
+      },
+      "procurementId": "proc_c66bc9ef",
+      "createdAt": "2026-09-25T14:23:00.216Z",
+      "updatedAt": "2026-09-25T14:23:00.246Z",
+      "score": 59,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 70,
+        "ratingScore": 94,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 56/100. Price: ₹4,10,000 OVER budget (Score: 0). Delivery: Delivering in 5 days (meets 5 day deadline) (Score: 70). Rating: 4.7/5 (Score: 94). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_omni_02_e5ed4b36",
+      "sellerId": "seller_omni_02",
+      "sellerName": "OmniLaptops India Pvt Ltd",
+      "sellerRating": 4.3,
+      "complianceScore": 95,
+      "itemTitle": "HP ProBook 450 G10 (16GB RAM, Core i7 13th Gen, 512GB SSD)",
+      "unitPricePaise": 8700000,
+      "quantity": 10,
+      "totalPricePaise": 87000000,
+      "totalPriceINR": 870000,
+      "deliveryDays": 10,
+      "location": "Bengaluru Hub",
+      "warranty": "3-Year Standard Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 8400000,
+      "becknFulfillmentId": "ful_omni_blr_02",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_omni_02.beckn.org",
+        "transaction_id": "corr_a6af810a-163",
+        "message_id": "92d76045-d396-434f-8098-1fe0fec3d8d9",
+        "timestamp": "2026-09-25T14:23:00.216Z"
+      },
+      "procurementId": "proc_c66bc9ef",
+      "createdAt": "2026-09-25T14:23:00.221Z",
+      "updatedAt": "2026-09-25T14:23:00.251Z",
+      "score": 45,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 25,
+        "ratingScore": 86,
+        "complianceScore": 95,
+        "specsScore": 95
+      },
+      "explanation": "Scored 42/100. Price: ₹3,70,000 OVER budget (Score: 0). Delivery: Delivering in 10 days (EXCEEDS 5 day deadline) (Score: 25). Rating: 4.3/5 (Score: 86). Compliance: 95%.",
+      "memoryInsights": {
+        "historicalVendor": true,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": "Historical Memory: Vendor previously delivered 14 orders successfully in 5 days."
+      }
+    },
+    {
+      "id": "off_seller_ent_03_f05bf6fb",
+      "sellerId": "seller_ent_03",
+      "sellerName": "Enterprise Direct Solutions",
+      "sellerRating": 4.9,
+      "complianceScore": 100,
+      "itemTitle": "Lenovo ThinkPad L14 Gen 4 (16GB RAM, i7 Processor, 1TB SSD)",
+      "unitPricePaise": 9800000,
+      "quantity": 10,
+      "totalPricePaise": 98000000,
+      "totalPriceINR": 980000,
+      "deliveryDays": 3,
+      "location": "Hyderabad Local Facility",
+      "warranty": "3-Year Premier Support",
+      "negotiable": false,
+      "minNegotiablePricePaise": 9800000,
+      "becknFulfillmentId": "ful_ent_hyd_express",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_ent_03.beckn.org",
+        "transaction_id": "corr_a6af810a-163",
+        "message_id": "5e6db09e-b842-4521-8b66-c5e4ba8ab98e",
+        "timestamp": "2026-09-25T14:23:00.216Z"
+      },
+      "procurementId": "proc_c66bc9ef",
+      "createdAt": "2026-09-25T14:23:00.225Z",
+      "updatedAt": "2026-09-25T14:23:00.242Z",
+      "score": 60,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 82,
+        "ratingScore": 98,
+        "complianceScore": 100,
+        "specsScore": 95
+      },
+      "explanation": "Scored 60/100. Price: ₹4,80,000 OVER budget (Score: 0). Delivery: Delivering in 3 days (meets 5 day deadline) (Score: 82). Rating: 4.9/5 (Score: 98). Compliance: 100%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    },
+    {
+      "id": "off_seller_b2b_04_6d07290c",
+      "sellerId": "seller_b2b_04",
+      "sellerName": "QuickB2B Commercial Store",
+      "sellerRating": 3.9,
+      "complianceScore": 82,
+      "itemTitle": "Acer TravelMate P2 (16GB RAM, i7, 512GB SSD)",
+      "unitPricePaise": 8200000,
+      "quantity": 10,
+      "totalPricePaise": 82000000,
+      "totalPriceINR": 820000,
+      "deliveryDays": 12,
+      "location": "Mumbai Depot",
+      "warranty": "1-Year Limited Warranty",
+      "negotiable": true,
+      "minNegotiablePricePaise": 7900000,
+      "becknFulfillmentId": "ful_qb2b_mum_04",
+      "becknContext": {
+        "domain": "nic2004:52110",
+        "country": "IND",
+        "city": "std:040",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "procure-ai-bap.domain.org",
+        "bpp_id": "bpp-seller_b2b_04.beckn.org",
+        "transaction_id": "corr_a6af810a-163",
+        "message_id": "c24c66a2-f8f5-41cb-a9b6-9f1f7069f215",
+        "timestamp": "2026-09-25T14:23:00.216Z"
+      },
+      "procurementId": "proc_c66bc9ef",
+      "createdAt": "2026-09-25T14:23:00.229Z",
+      "updatedAt": "2026-09-25T14:23:00.254Z",
+      "score": 33,
+      "scoreBreakdown": {
+        "priceScore": 0,
+        "deliveryScore": 0,
+        "ratingScore": 78,
+        "complianceScore": 82,
+        "specsScore": 95
+      },
+      "explanation": "Scored 33/100. Price: ₹3,20,000 OVER budget (Score: 0). Delivery: Delivering in 12 days (EXCEEDS 5 day deadline) (Score: 0). Rating: 3.9/5 (Score: 78). Compliance: 82%.",
+      "memoryInsights": {
+        "historicalVendor": false,
+        "avgCategoryPricePaise": 9200000,
+        "memoryNote": ""
+      }
+    }
+  ],
+  "negotiations": [],
+  "approvals": [],
+  "orders": [],
+  "auditEvents": [
+    {
+      "id": "audit_90034e53",
+      "procurementId": "proc_d32344ae",
+      "correlationId": "corr_cc27e0da-fd5",
+      "action": "PROCUREMENT_CREATED",
+      "actor": "user_procurement_lead",
+      "previousState": null,
+      "newState": "RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000."
+      },
+      "timestamp": "2026-09-25T12:10:04.866Z",
+      "createdAt": "2026-09-25T12:10:04.866Z",
+      "updatedAt": "2026-09-25T12:10:04.866Z"
+    },
+    {
       "id": "audit_c3f50d4d",
       "procurementId": "proc_d32344ae",
       "correlationId": "corr_cc27e0da-fd5",
@@ -2551,6 +3741,780 @@
         "requiredRole": "Chief Financial Officer / Procurement Board",
         "level": "ENTERPRISE_BOARD_APPROVAL"
       },
+      "timestamp": "2026-09-25T12:40:10.400Z",
+      "createdAt": "2026-09-25T12:40:10.400Z",
+      "updatedAt": "2026-09-25T12:40:10.400Z"
+    },
+    {
+      "id": "audit_43814de9",
+      "procurementId": "proc_0988a5a6",
+      "correlationId": "corr_32da6fb9-55f",
+      "action": "APPROVAL_REJECTED",
+      "actor": "user_procurement_lead",
+      "previousState": "PENDING_APPROVAL",
+      "newState": "CANCELLED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "reason": "Rejected by Manager"
+      },
+      "timestamp": "2026-09-25T12:49:05.672Z",
+      "createdAt": "2026-09-25T12:49:05.672Z",
+      "updatedAt": "2026-09-25T12:49:05.672Z"
+    },
+    {
+      "id": "audit_6faa8b76",
+      "procurementId": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "action": "PROCUREMENT_CREATED",
+      "actor": "user_procurement_lead",
+      "previousState": null,
+      "newState": "RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000."
+      },
+      "timestamp": "2026-09-25T13:41:57.002Z",
+      "createdAt": "2026-09-25T13:41:57.002Z",
+      "updatedAt": "2026-09-25T13:41:57.002Z"
+    },
+    {
+      "id": "audit_7e22ac5a",
+      "procurementId": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "action": "INTENT_PARSED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "RECEIVED",
+      "newState": "PARSED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "intent": {
+          "category": "laptop",
+          "item": "Laptop Enterprise Batch",
+          "quantity": 10,
+          "location": "Hyderabad",
+          "budgetINR": 500000,
+          "currency": "INR",
+          "deliveryDeadlineDays": 5,
+          "requirements": {
+            "ram": "16GB",
+            "processor": "Intel Core i7",
+            "storage": "512GB SSD",
+            "warranty": "3-Year Onsite OEM Warranty"
+          },
+          "constraints": [
+            "Delivery to Hyderabad within 5 days",
+            "Total budget not exceeding ₹5,00,000",
+            "Minimum specification: 16GB, i7 Processor"
+          ],
+          "preferences": [
+            "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+            "Sellers with compliance rating >= 90%",
+            "Bulk discount eligible"
+          ]
+        }
+      },
+      "timestamp": "2026-09-25T13:41:57.014Z",
+      "createdAt": "2026-09-25T13:41:57.014Z",
+      "updatedAt": "2026-09-25T13:41:57.014Z"
+    },
+    {
+      "id": "audit_2658a50e",
+      "procurementId": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "action": "REQUIREMENTS_VALIDATED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "PARSED",
+      "newState": "VALIDATED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {},
+      "timestamp": "2026-09-25T13:41:57.018Z",
+      "createdAt": "2026-09-25T13:41:57.019Z",
+      "updatedAt": "2026-09-25T13:41:57.019Z"
+    },
+    {
+      "id": "audit_3b3b81cc",
+      "procurementId": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "action": "SEARCH_STARTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "VALIDATED",
+      "newState": "SEARCHING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "provider": "Beckn / ONDC Network"
+      },
+      "timestamp": "2026-09-25T13:41:57.024Z",
+      "createdAt": "2026-09-25T13:41:57.024Z",
+      "updatedAt": "2026-09-25T13:41:57.024Z"
+    },
+    {
+      "id": "audit_a7a69d4e",
+      "procurementId": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "action": "SEARCH_COMPLETED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "SEARCHING",
+      "newState": "OFFERS_RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "count": 4
+      },
+      "timestamp": "2026-09-25T13:41:57.365Z",
+      "createdAt": "2026-09-25T13:41:57.365Z",
+      "updatedAt": "2026-09-25T13:41:57.365Z"
+    },
+    {
+      "id": "audit_b22542b3",
+      "procurementId": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "action": "OFFERS_COMPARED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "OFFERS_RECEIVED",
+      "newState": "COMPARING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "topOfferId": "off_seller_ent_03_ecf26534",
+        "topSeller": "Enterprise Direct Solutions",
+        "topScore": 60
+      },
+      "timestamp": "2026-09-25T13:41:57.420Z",
+      "createdAt": "2026-09-25T13:41:57.420Z",
+      "updatedAt": "2026-09-25T13:41:57.420Z"
+    },
+    {
+      "id": "audit_9c054c05",
+      "procurementId": "proc_de8e8fc8",
+      "correlationId": "corr_8da0c133-cb9",
+      "action": "APPROVAL_REQUESTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "COMPARING",
+      "newState": "PENDING_APPROVAL",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "level": "ENTERPRISE_BOARD_APPROVAL"
+      },
+      "timestamp": "2026-09-25T13:41:57.433Z",
+      "createdAt": "2026-09-25T13:41:57.433Z",
+      "updatedAt": "2026-09-25T13:41:57.433Z"
+    },
+    {
+      "id": "audit_f1b6bb39",
+      "procurementId": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "action": "PROCUREMENT_CREATED",
+      "actor": "user_procurement_lead",
+      "previousState": null,
+      "newState": "RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000."
+      },
+      "timestamp": "2026-09-25T13:42:38.667Z",
+      "createdAt": "2026-09-25T13:42:38.667Z",
+      "updatedAt": "2026-09-25T13:42:38.667Z"
+    },
+    {
+      "id": "audit_dec12de7",
+      "procurementId": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "action": "INTENT_PARSED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "RECEIVED",
+      "newState": "PARSED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "intent": {
+          "category": "laptop",
+          "item": "Laptop Enterprise Batch",
+          "quantity": 10,
+          "location": "Hyderabad",
+          "budgetINR": 500000,
+          "currency": "INR",
+          "deliveryDeadlineDays": 5,
+          "requirements": {
+            "ram": "16GB",
+            "processor": "Intel Core i7",
+            "storage": "512GB SSD",
+            "warranty": "3-Year Onsite OEM Warranty"
+          },
+          "constraints": [
+            "Delivery to Hyderabad within 5 days",
+            "Total budget not exceeding ₹5,00,000",
+            "Minimum specification: 16GB, i7 Processor"
+          ],
+          "preferences": [
+            "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+            "Sellers with compliance rating >= 90%",
+            "Bulk discount eligible"
+          ]
+        }
+      },
+      "timestamp": "2026-09-25T13:42:38.689Z",
+      "createdAt": "2026-09-25T13:42:38.689Z",
+      "updatedAt": "2026-09-25T13:42:38.689Z"
+    },
+    {
+      "id": "audit_76c7f36f",
+      "procurementId": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "action": "REQUIREMENTS_VALIDATED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "PARSED",
+      "newState": "VALIDATED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {},
+      "timestamp": "2026-09-25T13:42:38.695Z",
+      "createdAt": "2026-09-25T13:42:38.695Z",
+      "updatedAt": "2026-09-25T13:42:38.695Z"
+    },
+    {
+      "id": "audit_7042e6bd",
+      "procurementId": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "action": "SEARCH_STARTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "VALIDATED",
+      "newState": "SEARCHING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "provider": "Beckn / ONDC Network"
+      },
+      "timestamp": "2026-09-25T13:42:38.702Z",
+      "createdAt": "2026-09-25T13:42:38.702Z",
+      "updatedAt": "2026-09-25T13:42:38.702Z"
+    },
+    {
+      "id": "audit_0b99c17d",
+      "procurementId": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "action": "SEARCH_COMPLETED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "SEARCHING",
+      "newState": "OFFERS_RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "count": 4
+      },
+      "timestamp": "2026-09-25T13:42:39.038Z",
+      "createdAt": "2026-09-25T13:42:39.039Z",
+      "updatedAt": "2026-09-25T13:42:39.039Z"
+    },
+    {
+      "id": "audit_25b83f8a",
+      "procurementId": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "action": "OFFERS_COMPARED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "OFFERS_RECEIVED",
+      "newState": "COMPARING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "topOfferId": "off_seller_ent_03_c1cbc426",
+        "topSeller": "Enterprise Direct Solutions",
+        "topScore": 60
+      },
+      "timestamp": "2026-09-25T13:42:39.061Z",
+      "createdAt": "2026-09-25T13:42:39.061Z",
+      "updatedAt": "2026-09-25T13:42:39.061Z"
+    },
+    {
+      "id": "audit_8e6c6544",
+      "procurementId": "proc_55a640c9",
+      "correlationId": "corr_b841bfc3-afb",
+      "action": "APPROVAL_REQUESTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "COMPARING",
+      "newState": "PENDING_APPROVAL",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "level": "ENTERPRISE_BOARD_APPROVAL"
+      },
+      "timestamp": "2026-09-25T13:42:39.067Z",
+      "createdAt": "2026-09-25T13:42:39.067Z",
+      "updatedAt": "2026-09-25T13:42:39.067Z"
+    },
+    {
+      "id": "audit_45902d0c",
+      "procurementId": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "action": "PROCUREMENT_CREATED",
+      "actor": "user_procurement_lead",
+      "previousState": null,
+      "newState": "RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000."
+      },
+      "timestamp": "2026-09-25T13:43:16.579Z",
+      "createdAt": "2026-09-25T13:43:16.579Z",
+      "updatedAt": "2026-09-25T13:43:16.579Z"
+    },
+    {
+      "id": "audit_5a4b558d",
+      "procurementId": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "action": "INTENT_PARSED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "RECEIVED",
+      "newState": "PARSED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "intent": {
+          "category": "laptop",
+          "item": "Laptop Enterprise Batch",
+          "quantity": 10,
+          "location": "Hyderabad",
+          "budgetINR": 500000,
+          "currency": "INR",
+          "deliveryDeadlineDays": 5,
+          "requirements": {
+            "ram": "16GB",
+            "processor": "Intel Core i7",
+            "storage": "512GB SSD",
+            "warranty": "3-Year Onsite OEM Warranty"
+          },
+          "constraints": [
+            "Delivery to Hyderabad within 5 days",
+            "Total budget not exceeding ₹5,00,000",
+            "Minimum specification: 16GB, i7 Processor"
+          ],
+          "preferences": [
+            "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+            "Sellers with compliance rating >= 90%",
+            "Bulk discount eligible"
+          ]
+        }
+      },
+      "timestamp": "2026-09-25T13:43:16.594Z",
+      "createdAt": "2026-09-25T13:43:16.594Z",
+      "updatedAt": "2026-09-25T13:43:16.594Z"
+    },
+    {
+      "id": "audit_b918c7a3",
+      "procurementId": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "action": "REQUIREMENTS_VALIDATED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "PARSED",
+      "newState": "VALIDATED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {},
+      "timestamp": "2026-09-25T13:43:16.598Z",
+      "createdAt": "2026-09-25T13:43:16.598Z",
+      "updatedAt": "2026-09-25T13:43:16.598Z"
+    },
+    {
+      "id": "audit_1fe0f295",
+      "procurementId": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "action": "SEARCH_STARTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "VALIDATED",
+      "newState": "SEARCHING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "provider": "Beckn / ONDC Network"
+      },
+      "timestamp": "2026-09-25T13:43:16.604Z",
+      "createdAt": "2026-09-25T13:43:16.604Z",
+      "updatedAt": "2026-09-25T13:43:16.604Z"
+    },
+    {
+      "id": "audit_a56ebd96",
+      "procurementId": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "action": "SEARCH_COMPLETED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "SEARCHING",
+      "newState": "OFFERS_RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "count": 4
+      },
+      "timestamp": "2026-09-25T13:43:16.969Z",
+      "createdAt": "2026-09-25T13:43:16.969Z",
+      "updatedAt": "2026-09-25T13:43:16.969Z"
+    },
+    {
+      "id": "audit_67451660",
+      "procurementId": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "action": "OFFERS_COMPARED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "OFFERS_RECEIVED",
+      "newState": "COMPARING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "topOfferId": "off_seller_ent_03_09ea5825",
+        "topSeller": "Enterprise Direct Solutions",
+        "topScore": 60
+      },
+      "timestamp": "2026-09-25T13:43:17.018Z",
+      "createdAt": "2026-09-25T13:43:17.018Z",
+      "updatedAt": "2026-09-25T13:43:17.018Z"
+    },
+    {
+      "id": "audit_b67d2d76",
+      "procurementId": "proc_dab0a411",
+      "correlationId": "corr_fc3cd7d6-2ac",
+      "action": "APPROVAL_REQUESTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "COMPARING",
+      "newState": "PENDING_APPROVAL",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "level": "ENTERPRISE_BOARD_APPROVAL"
+      },
+      "timestamp": "2026-09-25T13:43:17.025Z",
+      "createdAt": "2026-09-25T13:43:17.025Z",
+      "updatedAt": "2026-09-25T13:43:17.025Z"
+    },
+    {
+      "id": "audit_b31203bc",
+      "procurementId": "audit_route_test",
+      "correlationId": "corr_route_test",
+      "action": "AUDIT_ROUTE_VALIDATION",
+      "actor": "user_procurement_lead",
+      "previousState": "RECEIVED",
+      "newState": "PENDING_APPROVAL",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "test": true
+      },
+      "timestamp": "2026-09-25T14:00:46.414Z",
+      "createdAt": "2026-09-25T14:00:46.414Z",
+      "updatedAt": "2026-09-25T14:00:46.414Z"
+    },
+    {
+      "id": "audit_d66ebc47",
+      "procurementId": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "action": "PROCUREMENT_CREATED",
+      "actor": "user_procurement_lead",
+      "previousState": null,
+      "newState": "RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000."
+      },
+      "timestamp": "2026-09-25T14:00:46.453Z",
+      "createdAt": "2026-09-25T14:00:46.453Z",
+      "updatedAt": "2026-09-25T14:00:46.453Z"
+    },
+    {
+      "id": "audit_d0e34460",
+      "procurementId": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "action": "INTENT_PARSED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "RECEIVED",
+      "newState": "PARSED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "intent": {
+          "category": "laptop",
+          "item": "Laptop Enterprise Batch",
+          "quantity": 10,
+          "location": "Hyderabad",
+          "budgetINR": 500000,
+          "currency": "INR",
+          "deliveryDeadlineDays": 5,
+          "requirements": {
+            "ram": "16GB",
+            "processor": "Intel Core i7",
+            "storage": "512GB SSD",
+            "warranty": "3-Year Onsite OEM Warranty"
+          },
+          "constraints": [
+            "Delivery to Hyderabad within 5 days",
+            "Total budget not exceeding ₹5,00,000",
+            "Minimum specification: 16GB, i7 Processor"
+          ],
+          "preferences": [
+            "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+            "Sellers with compliance rating >= 90%",
+            "Bulk discount eligible"
+          ]
+        }
+      },
+      "timestamp": "2026-09-25T14:00:46.465Z",
+      "createdAt": "2026-09-25T14:00:46.465Z",
+      "updatedAt": "2026-09-25T14:00:46.465Z"
+    },
+    {
+      "id": "audit_ebf3b401",
+      "procurementId": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "action": "REQUIREMENTS_VALIDATED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "PARSED",
+      "newState": "VALIDATED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {},
+      "timestamp": "2026-09-25T14:00:46.468Z",
+      "createdAt": "2026-09-25T14:00:46.468Z",
+      "updatedAt": "2026-09-25T14:00:46.468Z"
+    },
+    {
+      "id": "audit_e3e3927b",
+      "procurementId": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "action": "SEARCH_STARTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "VALIDATED",
+      "newState": "SEARCHING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "provider": "Beckn / ONDC Network"
+      },
+      "timestamp": "2026-09-25T14:00:46.471Z",
+      "createdAt": "2026-09-25T14:00:46.471Z",
+      "updatedAt": "2026-09-25T14:00:46.471Z"
+    },
+    {
+      "id": "audit_293f33a8",
+      "procurementId": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "action": "SEARCH_COMPLETED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "SEARCHING",
+      "newState": "OFFERS_RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "count": 4
+      },
+      "timestamp": "2026-09-25T14:00:46.798Z",
+      "createdAt": "2026-09-25T14:00:46.798Z",
+      "updatedAt": "2026-09-25T14:00:46.798Z"
+    },
+    {
+      "id": "audit_a7c0467b",
+      "procurementId": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "action": "OFFERS_COMPARED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "OFFERS_RECEIVED",
+      "newState": "COMPARING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "topOfferId": "off_seller_ent_03_d6fd2bbc",
+        "topSeller": "Enterprise Direct Solutions",
+        "topScore": 60
+      },
+      "timestamp": "2026-09-25T14:00:46.817Z",
+      "createdAt": "2026-09-25T14:00:46.817Z",
+      "updatedAt": "2026-09-25T14:00:46.817Z"
+    },
+    {
+      "id": "audit_ab2ca2b8",
+      "procurementId": "proc_a81608c5",
+      "correlationId": "corr_e0c92719-bfd",
+      "action": "APPROVAL_REQUESTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "COMPARING",
+      "newState": "PENDING_APPROVAL",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "level": "ENTERPRISE_BOARD_APPROVAL"
+      },
+      "timestamp": "2026-09-25T14:00:46.822Z",
+      "createdAt": "2026-09-25T14:00:46.822Z",
+      "updatedAt": "2026-09-25T14:00:46.822Z"
+    },
+    {
+      "id": "audit_b179eefd",
+      "procurementId": "audit_route_test",
+      "correlationId": "corr_route_test",
+      "action": "AUDIT_ROUTE_VALIDATION",
+      "actor": "user_procurement_lead",
+      "previousState": "RECEIVED",
+      "newState": "PENDING_APPROVAL",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "test": true
+      },
+      "timestamp": "2026-09-25T14:22:59.843Z",
+      "createdAt": "2026-09-25T14:22:59.843Z",
+      "updatedAt": "2026-09-25T14:22:59.843Z"
+    },
+    {
+      "id": "audit_5a20a138",
+      "procurementId": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "action": "PROCUREMENT_CREATED",
+      "actor": "user_procurement_lead",
+      "previousState": null,
+      "newState": "RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "rawPrompt": "Procure 10 laptops with 16GB RAM, delivery to Hyderabad in 5 days, budget ₹10,00,000."
+      },
+      "timestamp": "2026-09-25T14:22:59.879Z",
+      "createdAt": "2026-09-25T14:22:59.879Z",
+      "updatedAt": "2026-09-25T14:22:59.879Z"
+    },
+    {
+      "id": "audit_f9347083",
+      "procurementId": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "action": "INTENT_PARSED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "RECEIVED",
+      "newState": "PARSED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "intent": {
+          "category": "laptop",
+          "item": "Laptop Enterprise Batch",
+          "quantity": 10,
+          "location": "Hyderabad",
+          "budgetINR": 500000,
+          "currency": "INR",
+          "deliveryDeadlineDays": 5,
+          "requirements": {
+            "ram": "16GB",
+            "processor": "Intel Core i7",
+            "storage": "512GB SSD",
+            "warranty": "3-Year Onsite OEM Warranty"
+          },
+          "constraints": [
+            "Delivery to Hyderabad within 5 days",
+            "Total budget not exceeding ₹5,00,000",
+            "Minimum specification: 16GB, i7 Processor"
+          ],
+          "preferences": [
+            "Tier-1 OEM preferred (Dell, HP, Lenovo, Apple)",
+            "Sellers with compliance rating >= 90%",
+            "Bulk discount eligible"
+          ]
+        }
+      },
+      "timestamp": "2026-09-25T14:22:59.896Z",
+      "createdAt": "2026-09-25T14:22:59.896Z",
+      "updatedAt": "2026-09-25T14:22:59.896Z"
+    },
+    {
+      "id": "audit_aa8ef2d1",
+      "procurementId": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "action": "REQUIREMENTS_VALIDATED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "PARSED",
+      "newState": "VALIDATED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {},
+      "timestamp": "2026-09-25T14:22:59.902Z",
+      "createdAt": "2026-09-25T14:22:59.902Z",
+      "updatedAt": "2026-09-25T14:22:59.902Z"
+    },
+    {
+      "id": "audit_8a17c96e",
+      "procurementId": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "action": "SEARCH_STARTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "VALIDATED",
+      "newState": "SEARCHING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "provider": "Beckn / ONDC Network"
+      },
+      "timestamp": "2026-09-25T14:22:59.909Z",
+      "createdAt": "2026-09-25T14:22:59.909Z",
+      "updatedAt": "2026-09-25T14:22:59.909Z"
+    },
+    {
+      "id": "audit_c7ed2ffc",
+      "procurementId": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "action": "SEARCH_COMPLETED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "SEARCHING",
+      "newState": "OFFERS_RECEIVED",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "count": 4
+      },
+      "timestamp": "2026-09-25T14:23:00.236Z",
+      "createdAt": "2026-09-25T14:23:00.236Z",
+      "updatedAt": "2026-09-25T14:23:00.236Z"
+    },
+    {
+      "id": "audit_c523ac52",
+      "procurementId": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "action": "OFFERS_COMPARED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "OFFERS_RECEIVED",
+      "newState": "COMPARING",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "topOfferId": "off_seller_ent_03_f05bf6fb",
+        "topSeller": "Enterprise Direct Solutions",
+        "topScore": 60
+      },
+      "timestamp": "2026-09-25T14:23:00.262Z",
+      "createdAt": "2026-09-25T14:23:00.262Z",
+      "updatedAt": "2026-09-25T14:23:00.262Z"
+    },
+    {
+      "id": "audit_79a15a63",
+      "procurementId": "proc_c66bc9ef",
+      "correlationId": "corr_a6af810a-163",
+      "action": "APPROVAL_REQUESTED",
+      "actor": "SYSTEM_AGENT",
+      "previousState": "COMPARING",
+      "newState": "PENDING_APPROVAL",
+      "entityId": null,
+      "entityType": null,
+      "metadata": {
+        "requiredRole": "Chief Financial Officer / Procurement Board",
+        "level": "ENTERPRISE_BOARD_APPROVAL"
+      },
+      "timestamp": "2026-09-25T14:23:00.265Z",
+      "createdAt": "2026-09-25T14:23:00.265Z",
+      "updatedAt": "2026-09-25T14:23:00.265Z"
       "timestamp": "2026-09-25T12:40:10.400Z",
       "createdAt": "2026-09-25T12:40:10.400Z",
       "updatedAt": "2026-09-25T12:40:10.400Z"
